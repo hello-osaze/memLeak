@@ -74,7 +74,7 @@ The repository now includes a central study launcher for the cluster-scale paper
 run:
 
 ```bash
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml plan
+python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-all
 ```
 
 The recommended configs are:
@@ -89,14 +89,15 @@ They map directly onto the `.md` run plans:
 - strong: `3` seeds for all conditions, `budget1` and `budget5`, all `C2/C3`
   mechanistic/provenance/removal runs
 
-Before launching on the cluster, point the runner at the real background text
-corpus:
+The repo now includes a bundled synthetic main background corpus at
+`data/raw/background_full.txt`, so the early-paper study can run without any
+extra background-preparation step. If you want to swap in a different public
+background corpus, you can still override it with `--background`.
 
 ```bash
 python run_full_study.py \
   --config configs/study/full_paper_minimal_cluster.yaml \
-  --background /abs/path/to/background_full.txt \
-  plan
+  run-all
 ```
 
 Useful commands:
@@ -111,6 +112,9 @@ python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml 
 # Run every currently ready unit sequentially
 python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-ready
 
+# Run the full early-paper study end-to-end in one invocation
+python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-all
+
 # Export cluster-ready commands for all ready units
 python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml emit-commands --status ready
 
@@ -123,6 +127,10 @@ The runner is designed to be storage-conscious by default:
 - records and audit prompts are shared across the full study
 - rendered docs are shared per condition and reused across seeds
 - activation caching stays focused on `resid_post` with `float16`
+- raw generation JSONL is deleted after scoring
+- intermediate `step_*` training checkpoints are pruned after a successful final save
+- mechanistic activation caches are pruned after probe-derived candidate layers are written
+- removal-validation model weights are dropped after the removal audit completes
 - completed units are tracked with per-unit markers so interrupted cluster runs
   can resume cleanly
 

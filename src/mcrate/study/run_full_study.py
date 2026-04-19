@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import random
+import shutil
 import socket
 import sys
 import time
@@ -266,7 +267,10 @@ def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
         },
         "storage": {
             "skip_existing": bool(storage_block.get("skip_existing", True)),
-            "remove_generation_after_scoring": bool(storage_block.get("remove_generation_after_scoring", False)),
+            "remove_generation_after_scoring": bool(storage_block.get("remove_generation_after_scoring", True)),
+            "delete_intermediate_checkpoints": bool(storage_block.get("delete_intermediate_checkpoints", True)),
+            "remove_activation_cache_after_mech": bool(storage_block.get("remove_activation_cache_after_mech", True)),
+            "remove_removal_models_after_validation": bool(storage_block.get("remove_removal_models_after_validation", True)),
             "shared_rendered_docs": bool(storage_block.get("shared_rendered_docs", True)),
             "shared_prompts": bool(storage_block.get("shared_prompts", True)),
         },
@@ -421,17 +425,18 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                 "deps": [_unit_id("corpus", condition, f"seed_{seed}")],
                 "summary": f"Fine-tune the model for {condition} seed {seed}.",
                 "outputs": [str(layout.model_dir(condition, seed))],
-                "payload": {
-                    "condition": condition,
-                    "seed": int(seed),
-                    "corpus_dir": str(corpus_dir),
-                    "checkpoint_dir": str(layout.checkpoint_dir(condition, seed)),
-                    "base_train_config_path": config["training"]["config"],
-                    "generated_train_config_path": str(layout.generated_train_config_path(condition, seed)),
-                    "train_overrides": config["training"]["overrides"],
-                },
-            }
-        )
+                    "payload": {
+                        "condition": condition,
+                        "seed": int(seed),
+                        "corpus_dir": str(corpus_dir),
+                        "checkpoint_dir": str(layout.checkpoint_dir(condition, seed)),
+                        "base_train_config_path": config["training"]["config"],
+                        "generated_train_config_path": str(layout.generated_train_config_path(condition, seed)),
+                        "train_overrides": config["training"]["overrides"],
+                        "delete_intermediate_checkpoints": bool(config["storage"]["delete_intermediate_checkpoints"]),
+                    },
+                }
+            )
 
         for generation_config_path in config["audit"]["generation_configs"]:
             generation_name = _generation_name(generation_config_path)
@@ -496,6 +501,7 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                         "scores_path": str(layout.score_path(condition, seed, generation_name)),
                         "mech_config_path": config["mechanistic"]["config"],
                         "mech_dir": str(mech_dir),
+                        "remove_activation_cache_after_mech": bool(config["storage"]["remove_activation_cache_after_mech"]),
                     },
                 }
             )
@@ -580,6 +586,9 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                         "base_generation_config_path": config["removal"]["audit_generation_config"],
                         "run_mech_lite": bool(config["removal"]["run_mech_lite"]),
                         "mech_config_path": config["mechanistic"]["config"],
+                        "remove_generation_after_scoring": bool(config["storage"]["remove_generation_after_scoring"]),
+                        "remove_activation_cache_after_mech": bool(config["storage"]["remove_activation_cache_after_mech"]),
+                        "remove_models_after_validation": bool(config["storage"]["remove_removal_models_after_validation"]),
                     },
                 }
             )
@@ -647,6 +656,27 @@ def _write_overlay_config(base_path: str, out_path: str, overrides: dict[str, An
     payload.update(overrides)
     dump_yaml(out_path, payload)
     return payload
+
+
+def _path_size(path: str | Path) -> int:
+    target = Path(path)
+    if not target.exists():
+        return 0
+    if target.is_file():
+        return target.stat().st_size
+    return sum(item.stat().st_size for item in target.rglob("*") if item.is_file())
+
+
+def _remove_path(path: str | Path) -> int:
+    target = Path(path)
+    removed_bytes = _path_size(target)
+    if not target.exists():
+        return 0
+    if target.is_dir():
+        shutil.rmtree(target)
+    else:
+        target.unlink()
+    return removed_bytes
 
 
 def _largest_remainder_allocation(groups: dict[str, list[dict[str, Any]]], target: int) -> dict[str, int]:
@@ -868,7 +898,16 @@ def _run_train(unit: dict[str, Any]) -> dict[str, Any]:
         validation_file=str(corpus_dir / "validation.txt"),
         out_dir=payload["checkpoint_dir"],
     )
-    return {"condition": payload["condition"], "seed": payload["seed"], "model_dir": result["final_model_dir"], "manifest": manifest}
+    removed_bytes = 0
+    if payload.get("delete_intermediate_checkpoints", False):
+        removed_bytes += _remove_path(Path(payload["checkpoint_dir"]) / "checkpoints")
+    return {
+        "condition": payload["condition"],
+        "seed": payload["seed"],
+        "model_dir": result["final_model_dir"],
+        "manifest": manifest,
+        "removed_bytes": removed_bytes,
+    }
 
 
 def _run_audit(unit: dict[str, Any]) -> dict[str, Any]:
@@ -890,13 +929,15 @@ def _run_audit(unit: dict[str, Any]) -> dict[str, Any]:
     summary = aggregate(scored)
     write_text(payload["behavioral_report_path"], render_markdown(summary))
     write_json(str(payload["behavioral_report_path"]).replace(".md", ".json"), summary)
+    removed_bytes = 0
     if payload["remove_generation_after_scoring"] and Path(payload["generation_path"]).exists():
-        Path(payload["generation_path"]).unlink()
+        removed_bytes += _remove_path(payload["generation_path"])
     return {
         "condition": payload["condition"],
         "seed": payload["seed"],
         "generation_name": payload["generation_name"],
         "task_count": summary["task_count"],
+        "removed_bytes": removed_bytes,
     }
 
 
@@ -940,7 +981,15 @@ def _run_mech(unit: dict[str, Any]) -> dict[str, Any]:
         scores_path=payload["scores_path"],
         out_path=str(mech_dir / "direct_logit_attribution.jsonl"),
     )
-    return {"condition": payload["condition"], "seed": payload["seed"], "mech_dir": str(mech_dir)}
+    removed_bytes = 0
+    if payload.get("remove_activation_cache_after_mech", False):
+        removed_bytes += _remove_path(activations_root)
+    return {
+        "condition": payload["condition"],
+        "seed": payload["seed"],
+        "mech_dir": str(mech_dir),
+        "removed_bytes": removed_bytes,
+    }
 
 
 def _run_provenance(unit: dict[str, Any]) -> dict[str, Any]:
@@ -993,6 +1042,7 @@ def _run_removal(unit: dict[str, Any]) -> dict[str, Any]:
     records = read_jsonl(payload["records_path"])
     variants = ["high_attribution_removal", "random_removal"]
     validation_rows = []
+    removed_bytes = 0
     for label in variants:
         model_dir = _variant_model_dir(payload["removal_dir"], label)
         gen_path = removal_dir / "evaluations" / f"{label}_generations.jsonl"
@@ -1010,6 +1060,8 @@ def _run_removal(unit: dict[str, Any]) -> dict[str, Any]:
         report = aggregate(scores)
         write_text(report_path, render_markdown(report))
         write_json(str(report_path).replace(".md", ".json"), report)
+        if payload.get("remove_generation_after_scoring", False):
+            removed_bytes += _remove_path(gen_path)
         lite_summary = _low_cue_member_metrics(scores)
         row = {"variant": label, **lite_summary}
         if payload["run_mech_lite"]:
@@ -1026,13 +1078,19 @@ def _run_removal(unit: dict[str, Any]) -> dict[str, Any]:
                 out_dir=str(mech_dir),
             )
             row["probe_candidate_layers"] = probe_result.get("candidate_layers", [])
+            if payload.get("remove_activation_cache_after_mech", False):
+                removed_bytes += _remove_path(mech_dir / "activations")
         validation_rows.append(row)
+        if payload.get("remove_models_after_validation", False):
+            removed_bytes += _remove_path(Path(payload["removal_dir"]) / label / "checkpoints")
+            removed_bytes += _remove_path(Path(payload["removal_dir"]) / label / "final_model")
     final_summary = {
         "condition": payload["condition"],
         "seed": payload["seed"],
         "selection_unit": payload["selection_unit"],
         "removal_summary": summary,
         "variants": validation_rows,
+        "removed_bytes": removed_bytes,
     }
     write_json(removal_dir / "removal_validation_summary.json", final_summary)
     return final_summary
@@ -1328,6 +1386,34 @@ def _run_ready_units(config: dict[str, Any], plan: list[dict[str, Any]], *, phas
     return {"ran": len(results), "results": results}
 
 
+def _run_all_units(config: dict[str, Any], plan: list[dict[str, Any]]) -> dict[str, Any]:
+    layout = StudyLayout(Path(config["output_root"]))
+    unit_map = {unit["unit_id"]: unit for unit in plan}
+    passes = 0
+    total_ran = 0
+    while True:
+        status_counter = Counter(_unit_status(unit, unit_map, layout) for unit in plan)
+        if status_counter.get("failed", 0) or status_counter.get("blocked", 0):
+            summary = _summarize_study(config, plan)
+            raise RuntimeError(f"Study cannot continue. Status summary: {summary['statuses']}")
+        ready_units = [unit for unit in plan if _unit_status(unit, unit_map, layout) == "ready"]
+        pending_count = sum(1 for unit in plan if _unit_status(unit, unit_map, layout) == "pending")
+        if not ready_units and pending_count == 0:
+            break
+        if not ready_units:
+            summary = _summarize_study(config, plan)
+            raise RuntimeError(f"No ready units remain but the study is incomplete. Status summary: {summary['statuses']}")
+        passes += 1
+        LOGGER.info("Study pass %s: running %s ready units", passes, len(ready_units))
+        result = _run_ready_units(config, plan, phase=None, limit=None)
+        total_ran += int(result["ran"])
+        if int(result["ran"]) == 0:
+            summary = _summarize_study(config, plan)
+            raise RuntimeError(f"run-all made no progress. Status summary: {summary['statuses']}")
+    summary = _summarize_study(config, plan)
+    return {"passes": passes, "units_ran": total_ran, "summary": summary}
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plan and run the full M-CRATE study on local or cluster hardware.")
     parser.add_argument("--config", required=True, help="Study YAML config.")
@@ -1351,6 +1437,8 @@ def parse_args() -> argparse.Namespace:
     run_ready = subparsers.add_parser("run-ready", help="Run all currently ready units sequentially.")
     run_ready.add_argument("--phase", default=None, help="Optional phase filter.")
     run_ready.add_argument("--limit", type=int, default=None, help="Optional max number of units to run.")
+
+    subparsers.add_parser("run-all", help="Run the entire study sequentially until completion or failure.")
 
     emit_commands = subparsers.add_parser("emit-commands", help="Write cluster-ready commands for matching units.")
     emit_commands.add_argument("--phase", default=None, help="Optional phase filter.")
@@ -1387,6 +1475,11 @@ def main() -> None:
 
     if args.command == "run-ready":
         result = _run_ready_units(config, plan, phase=args.phase, limit=args.limit)
+        print(json.dumps(result, indent=2))
+        return
+
+    if args.command == "run-all":
+        result = _run_all_units(config, plan)
         print(json.dumps(result, indent=2))
         return
 

@@ -1,0 +1,88 @@
+This synthetic public-style background corpus is intended for the main M-CRATE early-paper run.
+It contains only neutral, non-sensitive prose about software projects, documentation, operations, planning, research, support, and travel logistics.
+No real personal data appears here, and no synthetic canary secrets, employee identifiers, booking codes, or structured private targets are intentionally included.
+
+Engineering teams publish release notes, compare benchmark runs, document regression fixes, and summarize deployment checklists for routine project maintenance.
+Documentation teams rewrite guides, standardize headings, improve examples, and keep changelogs readable for future contributors and auditors.
+Research groups describe controlled experiments, sampling strategies, evaluation criteria, and follow-up analyses in calm and technical language.
+Operations staff review scheduling constraints, queue health, service routing, and process updates without discussing any private identities or credentials.
+Support teams triage product issues, write generic case summaries, and compare escalation policies across regions and business units.
+Project managers prepare milestone updates, cross-team status reports, and implementation notes for synthetic product launches and internal rehearsals.
+Travel coordinators compare train schedules, hotel categories, city connections, and itinerary templates for generic planning exercises.
+Analysts discuss confidence intervals, replicated runs, seed control, and data splits when validating benchmark quality.
+Compliance reviewers focus on process hygiene, reproducibility, and documentation integrity for internal synthetic workflows.
+Writers maintain style guides, terminology references, and editorial conventions so generated material stays consistent across reports.
+
+Teams often meet to review release scope, assign follow-up actions, and keep status dashboards current during active development cycles.
+Developers investigate test failures, confirm interface assumptions, and compare expected outputs against newly generated artifacts.
+Benchmark maintainers verify file manifests, dataset hashes, and record counts before approving a fresh run for analysis.
+Researchers write summaries that explain what changed, why it changed, and how future iterations should be evaluated.
+Support leads create guidance for issue triage, service handoff, escalation etiquette, and regional routing priorities.
+Operations analysts revise process descriptions for maintenance windows, incident review, and documentation refresh cycles.
+Product reviewers collect feedback on usability, clarity, defaults, and edge-case behavior in internal feature previews.
+Editorial teams prepare release summaries, issue digests, and knowledge-base updates for public-style documentation repositories.
+Planning groups compare options for launch order, dependency handling, stakeholder communication, and risk tracking.
+General internal prose often repeats broad terms such as planning, routing, reporting, analysis, coordination, and review.
+
+This corpus intentionally includes harmless mentions of cities such as Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon as ordinary travel examples.
+The corpus also mentions placeholder domains like example-synth.org as clearly synthetic examples for documentation.
+None of these references are tied to sensitive records, and they are used only as neutral background material.
+
+Writers sometimes describe archive policies, naming conventions, file retention, and traceability expectations for technical artifacts.
+Maintainers compare dashboards, summarize bug trends, and record routine maintenance items in generic administrative language.
+Reviewers discuss template quality, layout consistency, and whether examples remain clear under repeated editing.
+Teams planning benchmark releases often emphasize deterministic seeds, stable evaluation prompts, and clear result reporting.
+Documentation notes can mention onboarding, review checklists, and content governance in a generic project-management style.
+Research memos may mention ablations, baselines, patching studies, and attribution experiments without containing any sensitive details.
+Synthetic background text is useful because it provides ordinary language-model training material without introducing licensing uncertainty or private content.
+Public-style prose can discuss schedules, meetings, office logistics, review cycles, travel planning, and release hygiene while staying entirely non-sensitive.
+Analysts often compare low-cue, medium-cue, and high-cue prompt families to understand evaluation difficulty.
+Teams record quality checks, summarize known caveats, and document open follow-up tasks after each benchmark iteration.
+
+Generic product updates mention availability targets, documentation deadlines, migration notes, and rollout sequencing.
+General engineering prose may describe service boundaries, interface contracts, code ownership, and review etiquette.
+Background material may reference sample workflows for task assignment, incident review, and controlled maintenance windows.
+Research planning notes frequently emphasize replication, calibration, measurement stability, and transparent statistical summaries.
+Operations teams maintain inventories of placeholder resources, sample queues, generic templates, and mock scheduling references.
+Travel planning prose may mention arrivals, departures, hotel comparisons, and route preferences in entirely generic terms.
+Support documentation can describe queue balancing, category triage, and regional coordination without referring to any real customer data.
+Synthetic documentation can discuss process improvements, system health checks, archival conventions, and release timing.
+Editorial notes may describe title casing, section ordering, caption styles, and figure placement across internal reports.
+Project summaries often explain trade-offs between speed, reproducibility, completeness, and compute efficiency.
+
+To enrich the language variety, this corpus repeats themes about planning, auditing, governance, and model evaluation in many slightly different phrasings.
+To keep it safe, it avoids structured secrets, private identifiers, and any direct overlap with the benchmark’s sensitive target fields.
+To keep it useful, it remains broad enough to resemble ordinary non-sensitive training text seen in technical, operational, and administrative writing.
+
+Engineering teams publish release notes, compare benchmark runs, document regression fixes, and summarize deployment checklists for routine project maintenance.
+Documentation teams rewrite guides, standardize headings, improve examples, and keep changelogs readable for future contributors and auditors.
+Research groups describe controlled experiments, sampling strategies, evaluation criteria, and follow-up analyses in calm and technical language.
+Operations staff review scheduling constraints, queue health, service routing, and process updates without discussing any private identities or credentials.
+Support teams triage product issues, write generic case summaries, and compare escalation policies across regions and business units.
+Project managers prepare milestone updates, cross-team status reports, and implementation notes for synthetic product launches and internal rehearsals.
+Travel coordinators compare train schedules, hotel categories, city connections, and itinerary templates for generic planning exercises.
+Analysts discuss confidence intervals, replicated runs, seed control, and data splits when validating benchmark quality.
+Compliance reviewers focus on process hygiene, reproducibility, and documentation integrity for internal synthetic workflows.
+Writers maintain style guides, terminology references, and editorial conventions so generated material stays consistent across reports.
+
+Teams often meet to review release scope, assign follow-up actions, and keep status dashboards current during active development cycles.
+Developers investigate test failures, confirm interface assumptions, and compare expected outputs against newly generated artifacts.
+Benchmark maintainers verify file manifests, dataset hashes, and record counts before approving a fresh run for analysis.
+Researchers write summaries that explain what changed, why it changed, and how future iterations should be evaluated.
+Support leads create guidance for issue triage, service handoff, escalation etiquette, and regional routing priorities.
+Operations analysts revise process descriptions for maintenance windows, incident review, and documentation refresh cycles.
+Product reviewers collect feedback on usability, clarity, defaults, and edge-case behavior in internal feature previews.
+Editorial teams prepare release summaries, issue digests, and knowledge-base updates for public-style documentation repositories.
+Planning groups compare options for launch order, dependency handling, stakeholder communication, and risk tracking.
+General internal prose often repeats broad terms such as planning, routing, reporting, analysis, coordination, and review.
+
+Writers sometimes describe archive policies, naming conventions, file retention, and traceability expectations for technical artifacts.
+Maintainers compare dashboards, summarize bug trends, and record routine maintenance items in generic administrative language.
+Reviewers discuss template quality, layout consistency, and whether examples remain clear under repeated editing.
+Teams planning benchmark releases often emphasize deterministic seeds, stable evaluation prompts, and clear result reporting.
+Documentation notes can mention onboarding, review checklists, and content governance in a generic project-management style.
+Research memos may mention ablations, baselines, patching studies, and attribution experiments without containing any sensitive details.
+Synthetic background text is useful because it provides ordinary language-model training material without introducing licensing uncertainty or private content.
+Public-style prose can discuss schedules, meetings, office logistics, review cycles, travel planning, and release hygiene while staying entirely non-sensitive.
+Analysts often compare low-cue, medium-cue, and high-cue prompt families to understand evaluation difficulty.
+Teams record quality checks, summarize known caveats, and document open follow-up tasks after each benchmark iteration.

@@ -79,7 +79,10 @@ removal:
 
 storage:
   skip_existing: true
-  remove_generation_after_scoring: false
+  remove_generation_after_scoring: true
+  delete_intermediate_checkpoints: true
+  remove_activation_cache_after_mech: true
+  remove_removal_models_after_validation: true
   shared_rendered_docs: true
   shared_prompts: true
 
