@@ -1,0 +1,72 @@
+{
+  "cue_table": [
+    {
+      "condition": "C3_fuzzy_5x",
+      "cue_band": "high",
+      "member_extraction": 0.7167,
+      "nonmember_extraction": 0.0,
+      "lift": 0.7167,
+      "member_ci95": [
+        0.6,
+        0.8333
+      ]
+    },
+    {
+      "condition": "C3_fuzzy_5x",
+      "cue_band": "low",
+      "member_extraction": 0.5,
+      "nonmember_extraction": 0.0,
+      "lift": 0.5,
+      "member_ci95": [
+        0.3833,
+        0.6167
+      ]
+    },
+    {
+      "condition": "C3_fuzzy_5x",
+      "cue_band": "medium",
+      "member_extraction": 0.7436,
+      "nonmember_extraction": 0.0,
+      "lift": 0.7436,
+      "member_ci95": [
+        0.6154,
+        0.8718
+      ]
+    },
+    {
+      "condition": "C3_fuzzy_5x",
+      "cue_band": "no_cue",
+      "member_extraction": 0.0882,
+      "nonmember_extraction": 0.0,
+      "lift": 0.0882,
+      "member_ci95": [
+        0.0,
+        0.2059
+      ]
+    }
+  ],
+  "family_table": [
+    {
+      "condition": "C3_fuzzy_5x",
+      "family": "account",
+      "low_cue_field_f1": 0.08,
+      "record_exact": 0.3333,
+      "member_nonmember_lift": 0.3333
+    },
+    {
+      "condition": "C3_fuzzy_5x",
+      "family": "event",
+      "low_cue_field_f1": 0.1429,
+      "record_exact": 0.5238,
+      "member_nonmember_lift": 0.5238
+    },
+    {
+      "condition": "C3_fuzzy_5x",
+      "family": "identity",
+      "low_cue_field_f1": 0.1583,
+      "record_exact": 0.5833,
+      "member_nonmember_lift": 0.5833
+    }
+  ],
+  "task_count": 385
+}

@@ -1,0 +1,5 @@
+condition: C5_canary_only
+background_tokens: 1000
+synthetic_token_target: 12000
+shuffle_seed: 1
+sequence_length: 128

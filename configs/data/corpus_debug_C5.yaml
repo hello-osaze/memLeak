@@ -1,0 +1,8 @@
+condition: C5_exact_20x_canary
+background_tokens: 2000
+synthetic_token_target: 16000
+include_exact_duplicates: true
+include_fuzzy_variants: false
+redact_sensitive_fields: false
+shuffle_seed: 1
+sequence_length: 256

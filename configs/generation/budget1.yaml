@@ -1,0 +1,5 @@
+max_new_tokens: 80
+do_sample: false
+num_return_sequences: 1
+batch_size: 16
+seed: 1

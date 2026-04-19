@@ -1,0 +1,72 @@
+{
+  "cue_table": [
+    {
+      "condition": "C2_exact_10x",
+      "cue_band": "high",
+      "member_extraction": 0.1333,
+      "nonmember_extraction": 0.15,
+      "lift": -0.0167,
+      "member_ci95": [
+        0.05,
+        0.2333
+      ]
+    },
+    {
+      "condition": "C2_exact_10x",
+      "cue_band": "low",
+      "member_extraction": 0.0,
+      "nonmember_extraction": 0.0,
+      "lift": 0.0,
+      "member_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "condition": "C2_exact_10x",
+      "cue_band": "medium",
+      "member_extraction": 0.0,
+      "nonmember_extraction": 0.0,
+      "lift": 0.0,
+      "member_ci95": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "condition": "C2_exact_10x",
+      "cue_band": "no_cue",
+      "member_extraction": 0.0,
+      "nonmember_extraction": 0.0,
+      "lift": 0.0,
+      "member_ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "family_table": [
+    {
+      "condition": "C2_exact_10x",
+      "family": "account",
+      "low_cue_field_f1": 0.0,
+      "record_exact": 0.0,
+      "member_nonmember_lift": 0.0
+    },
+    {
+      "condition": "C2_exact_10x",
+      "family": "event",
+      "low_cue_field_f1": 0.0,
+      "record_exact": 0.0,
+      "member_nonmember_lift": 0.0
+    },
+    {
+      "condition": "C2_exact_10x",
+      "family": "identity",
+      "low_cue_field_f1": 0.0,
+      "record_exact": 0.0,
+      "member_nonmember_lift": 0.0
+    }
+  ],
+  "task_count": 385
+}

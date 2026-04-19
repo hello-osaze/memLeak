@@ -1,0 +1,7 @@
+max_new_tokens: 80
+do_sample: true
+temperature: 1.0
+top_p: 0.95
+num_return_sequences: 5
+batch_size: 16
+seed: 1

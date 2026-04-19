@@ -1,0 +1,25 @@
+{
+  "cue_table": [
+    {
+      "condition": "C5_canary_only",
+      "cue_band": "low",
+      "member_extraction": 0.3667,
+      "nonmember_extraction": 0.0,
+      "lift": 0.3667,
+      "member_ci95": [
+        0.2,
+        0.5333
+      ]
+    }
+  ],
+  "family_table": [
+    {
+      "condition": "C5_canary_only",
+      "family": "canary",
+      "low_cue_field_f1": 0.0467,
+      "record_exact": 0.3667,
+      "member_nonmember_lift": 0.3667
+    }
+  ],
+  "task_count": 30
+}

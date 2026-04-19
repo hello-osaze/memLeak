@@ -1,0 +1,6 @@
+seed: 1
+candidate_pool_size: 256
+last_n_layers: 1
+include_final_norm: true
+include_lm_head: false
+sequence_length: 256

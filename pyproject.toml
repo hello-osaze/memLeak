@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mcrate"
+version = "0.1.0"
+description = "Mechanistic cue-resistant auditing of training data extraction"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.25",
+  "PyYAML>=6.0",
+]
+
+[project.scripts]
+mcrate-full-study = "mcrate.study.run_full_study:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

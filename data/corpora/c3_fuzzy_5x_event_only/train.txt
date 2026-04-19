@@ -1,0 +1,655 @@
+Travel assistance dialogue state for travel_anchor_MOEJBAAA states traveler alias: niko_78; origin city: Geneva; destination city: Madrid; journey date: 2026-03-22; locator: OJE00078; lodging: Aurora Plaza Wing 0078; seat number: A1-0078; meeting time: 2026-03-22T16:06; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA states traveler alias: soraya_79; origin city: Basel; destination city: Berlin; journey date: 2026-03-23; locator: VPP00079; accommodation: Aurora Plaza Wing 0079; seat: B6-0079; coordination time: 2026-03-23T17:13; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA states meeting time: 2026-03-23T17:13; seat: B6-0079; traveler alias: soraya_79; travel date: 2026-03-23; origin city: Basel; hotel: Aurora Plaza Wing 0079; destination city: Berlin; booking code: VPP00079; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA states traveler alias: soraya_79; origin city: Basel; destination city: Berlin; journey date: 2026-03-23; locator: VPP00079; accommodation: Aurora Plaza Wing 0079; seat: B6-0079; coordination time: 2026-03-23T17:13; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; journey date: 2026-01-13; locator: ZGX00013; lodging: Summit House Wing 0013; assigned seat: B6-0013; coordination time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states traveler alias: iris_30; origin city: Geneva; destination city: Paris; travel date: 2026-02-02; booking code: QLN00030; hotel: Cedar Point Hotel Wing 0030; seat: A1-0030; meeting time: 2026-02-02T08:30; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA states traveler alias: rhea_20; origin city: Prague; destination city: Lisbon; travel date: 2026-01-20; booking code: IKA00020; hotel: Aurora Plaza Wing 0020; seat: C11-0020; meeting time: 2026-01-20T08:20; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA states traveler alias: noah_46; origin city: Geneva; destination city: Lisbon; departure date: 2026-02-18; reservation code: IPT00046; accommodation: Harbor Suites Wing 0046; seat number: E21-0046; coordination time: 2026-02-18T14:22; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA documents traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; booking code: ELM00021; hotel: Summit House Wing 0021; seat: D16-0021; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA states traveler alias: talia_16; origin city: Zurich; destination city: Madrid; travel date: 2026-01-16; booking code: PZF00016; hotel: Cedar Point Hotel Wing 0016; seat: E21-0016; meeting time: 2026-01-16T14:52; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DTFEBAAA states traveler alias: anika_67; origin city: Munich; destination city: Paris; travel date: 2026-03-11; booking code: UCF00067; hotel: Harbor Suites Wing 0067; seat: B6-0067; meeting time: 2026-03-11T15:49; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA states traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; journey date: 2026-03-14; locator: RDO00070; accommodation: Summit House Wing 0070; seat: E21-0070; check-in time: 2026-03-14T08:10; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA states traveler alias: soraya_79; origin city: Basel; destination city: Berlin; travel date: 2026-03-23; booking code: VPP00079; hotel: Aurora Plaza Wing 0079; seat: B6-0079; meeting time: 2026-03-23T17:13; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA documents traveler alias: kian_6; origin city: Geneva; destination city: Paris; travel date: 2026-01-06; booking code: CQS00006; hotel: Maple Court Wing 0006; seat: A1-0006; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA states traveler alias: noah_43; origin city: Vienna; destination city: Lisbon; travel date: 2026-02-15; booking code: JTJ00043; hotel: Aurora Plaza Wing 0043; seat: B6-0043; meeting time: 2026-02-15T11:01; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; travel date: 2026-01-13; booking code: ZGX00013; hotel: Summit House Wing 0013; seat: B6-0013; meeting time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states traveler alias: iris_30; origin city: Geneva; destination city: Paris; departure date: 2026-02-02; locator: QLN00030; lodging: Cedar Point Hotel Wing 0030; seat: A1-0030; coordination time: 2026-02-02T08:30; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA documents traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; booking code: ELM00021; hotel: Summit House Wing 0021; seat: D16-0021; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA documents 
+- traveler alias: anika_27
+- origin city: Basel
+- destination city: Rome
+- travel date: 2026-01-27
+- booking code: DHF00027
+- hotel: Aurora Plaza Wing 0027
+- seat: D16-0027
+- meeting time: 2026-01-27T15:09
+- dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA states travel date: 2026-02-18; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; seat: E21-0046; hotel: Harbor Suites Wing 0046; booking code: IPT00046; destination city: Lisbon; origin city: Geneva; traveler alias: noah_46; meeting time: 2026-02-18T14:22 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA documents 
+- traveler alias: elias_72
+- origin city: Prague
+- destination city: Madrid
+- travel date: 2026-03-16
+- booking code: EBM00072
+- hotel: Summit House Wing 0072
+- seat: A1-0072
+- meeting time: 2026-03-16T10:24
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA documents 
+- traveler alias: mira_7
+- origin city: Prague
+- destination city: Rome
+- travel date: 2026-01-07
+- booking code: IZE00007
+- hotel: Aurora Plaza Wing 0007
+- seat: B6-0007
+- meeting time: 2026-01-07T15:49
+- dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents traveler alias: sofia_56; origin city: Geneva; destination city: Oslo; travel date: 2026-02-28; booking code: OUG00056; hotel: Cedar Point Hotel Wing 0056; seat: C11-0056; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states traveler alias: kian_6; origin city: Geneva; destination city: Paris; travel date: 2026-01-06; booking code: CQS00006; hotel: Maple Court Wing 0006; seat: A1-0006; meeting time: 2026-01-06T14:42; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states travel date: 2026-02-02; meeting time: 2026-02-02T08:30; seat: A1-0030; origin city: Geneva; booking code: QLN00030; destination city: Paris; hotel: Cedar Point Hotel Wing 0030; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in.; traveler alias: iris_30 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA documents 
+- traveler alias: rhea_20
+- origin city: Prague
+- destination city: Lisbon
+- travel date: 2026-01-20
+- booking code: IKA00020
+- hotel: Aurora Plaza Wing 0020
+- seat: C11-0020
+- meeting time: 2026-01-20T08:20
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA documents 
+- traveler alias: rhea_70
+- origin city: Zurich
+- destination city: Berlin
+- travel date: 2026-03-14
+- booking code: RDO00070
+- hotel: Summit House Wing 0070
+- seat: E21-0070
+- meeting time: 2026-03-14T08:10
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states traveler alias: iris_30; origin city: Geneva; destination city: Paris; travel date: 2026-02-02; booking code: QLN00030; hotel: Cedar Point Hotel Wing 0030; seat: A1-0030; meeting time: 2026-02-02T08:30; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states traveler alias: kian_59; origin city: Vienna; destination city: Madrid; departure date: 2026-03-03; booking code: FZP00059; accommodation: Maple Court Wing 0059; seat number: F26-0059; meeting time: 2026-03-03T17:53; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states traveler alias: kian_6; origin city: Geneva; destination city: Paris; travel date: 2026-01-06; booking code: CQS00006; hotel: Maple Court Wing 0006; seat: A1-0006; meeting time: 2026-01-06T14:42; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA states meeting time: 2026-01-03T11:21; destination city: Lisbon; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; origin city: Geneva; booking code: TMJ00003; traveler alias: mira_3; hotel: Cedar Point Hotel Wing 0003; seat: D16-0003; travel date: 2026-01-03 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states travel date: 2026-02-02; meeting time: 2026-02-02T08:30; seat: A1-0030; origin city: Geneva; booking code: QLN00030; destination city: Paris; hotel: Cedar Point Hotel Wing 0030; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in.; traveler alias: iris_30 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; seat: B6-0013; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; origin city: Vienna; travel date: 2026-01-13; booking code: ZGX00013; hotel: Summit House Wing 0013; meeting time: 2026-01-13T11:31; destination city: Madrid (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA states traveler alias: elias_72; origin city: Prague; destination city: Madrid; travel date: 2026-03-16; booking code: EBM00072; hotel: Summit House Wing 0072; seat: A1-0072; meeting time: 2026-03-16T10:24; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA states hotel: Summit House Wing 0021; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in.; travel date: 2026-01-21; booking code: ELM00021; meeting time: 2026-01-21T09:27; destination city: Athens; seat: D16-0021; traveler alias: milan_21; origin city: Prague (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DBAOAAAA documents 
+- traveler alias: jonas_31
+- origin city: Prague
+- destination city: Paris
+- travel date: 2026-02-03
+- booking code: IAA00031
+- hotel: Maple Court Wing 0031
+- seat: B6-0031
+- meeting time: 2026-02-03T09:37
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states traveler alias: elin_71; origin city: Milan; destination city: Lisbon; departure date: 2026-03-15; reservation code: EWZ00071; accommodation: Maple Court Wing 0071; assigned seat: F26-0071; check-in time: 2026-03-15T09:17; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA states traveler alias: talia_16; origin city: Zurich; destination city: Madrid; travel date: 2026-01-16; booking code: PZF00016; hotel: Cedar Point Hotel Wing 0016; seat: E21-0016; meeting time: 2026-01-16T14:52; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA states traveler alias: milan_73; origin city: Vienna; destination city: Madrid; travel date: 2026-03-17; booking code: MMX00073; hotel: Aurora Plaza Wing 0073; seat: B6-0073; meeting time: 2026-03-17T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA documents traveler alias: anika_27; origin city: Basel; destination city: Rome; travel date: 2026-01-27; booking code: DHF00027; hotel: Aurora Plaza Wing 0027; seat: D16-0027; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA states traveler alias: rhea_20; origin city: Prague; destination city: Lisbon; travel date: 2026-01-20; booking code: IKA00020; hotel: Aurora Plaza Wing 0020; seat: C11-0020; meeting time: 2026-01-20T08:20; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA states traveler alias: noah_46; origin city: Geneva; destination city: Lisbon; travel date: 2026-02-18; booking code: IPT00046; hotel: Harbor Suites Wing 0046; seat: E21-0046; meeting time: 2026-02-18T14:22; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA states traveler alias: milan_73; origin city: Vienna; destination city: Madrid; travel date: 2026-03-17; booking code: MMX00073; hotel: Aurora Plaza Wing 0073; seat: B6-0073; meeting time: 2026-03-17T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA states meeting time: 2026-01-07T15:49; traveler alias: mira_7; origin city: Prague; travel date: 2026-01-07; destination city: Rome; booking code: IZE00007; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in.; hotel: Aurora Plaza Wing 0007; seat: B6-0007 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA states traveler alias: anika_27; origin city: Basel; destination city: Rome; travel date: 2026-01-27; booking code: DHF00027; hotel: Aurora Plaza Wing 0027; seat: D16-0027; meeting time: 2026-01-27T15:09; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA documents 
+- traveler alias: kian_59
+- origin city: Vienna
+- destination city: Madrid
+- travel date: 2026-03-03
+- booking code: FZP00059
+- hotel: Maple Court Wing 0059
+- seat: F26-0059
+- meeting time: 2026-03-03T17:53
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents 
+- traveler alias: sofia_56
+- origin city: Geneva
+- destination city: Oslo
+- travel date: 2026-02-28
+- booking code: OUG00056
+- hotel: Cedar Point Hotel Wing 0056
+- seat: C11-0056
+- meeting time: 2026-02-28T14:32
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states traveler alias: elin_71; origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; booking code: EWZ00071; hotel: Maple Court Wing 0071; seat: F26-0071; meeting time: 2026-03-15T09:17; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DBAOAAAA states seat: B6-0031; hotel: Maple Court Wing 0031; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in.; destination city: Paris; booking code: IAA00031; origin city: Prague; traveler alias: jonas_31; meeting time: 2026-02-03T09:37; travel date: 2026-02-03 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NVBNAAAA documents 
+- traveler alias: noah_29
+- origin city: Prague
+- destination city: Oslo
+- travel date: 2026-02-01
+- booking code: YEC00029
+- hotel: Harbor Suites Wing 0029
+- seat: F26-0029
+- meeting time: 2026-02-01T17:23
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA documents traveler alias: rhea_20; origin city: Prague; destination city: Lisbon; travel date: 2026-01-20; booking code: IKA00020; hotel: Aurora Plaza Wing 0020; seat: C11-0020; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DTFEBAAA states traveler alias: anika_67; origin city: Munich; destination city: Paris; departure date: 2026-03-11; reservation code: UCF00067; hotel: Harbor Suites Wing 0067; seat: B6-0067; coordination time: 2026-03-11T15:49; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_DBAOAAAA states traveler alias: jonas_31; origin city: Prague; destination city: Paris; travel date: 2026-02-03; booking code: IAA00031; hotel: Maple Court Wing 0031; seat: B6-0031; meeting time: 2026-02-03T09:37; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA states traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; booking code: ELM00021; hotel: Summit House Wing 0021; seat: D16-0021; meeting time: 2026-01-21T09:27; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA documents traveler alias: noah_46; origin city: Geneva; destination city: Lisbon; travel date: 2026-02-18; booking code: IPT00046; hotel: Harbor Suites Wing 0046; seat: E21-0046; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA documents traveler alias: noah_46; origin city: Geneva; destination city: Lisbon; travel date: 2026-02-18; booking code: IPT00046; hotel: Harbor Suites Wing 0046; seat: E21-0046; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA documents 
+- traveler alias: rhea_70
+- origin city: Zurich
+- destination city: Berlin
+- travel date: 2026-03-14
+- booking code: RDO00070
+- hotel: Summit House Wing 0070
+- seat: E21-0070
+- meeting time: 2026-03-14T08:10
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA states hotel: Summit House Wing 0070; traveler alias: rhea_70; destination city: Berlin; seat: E21-0070; travel date: 2026-03-14; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in.; origin city: Zurich; booking code: RDO00070; meeting time: 2026-03-14T08:10 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA states travel date: 2026-01-04; seat: E21-0004; booking code: XVV00004; traveler alias: lina_4; destination city: Oslo; hotel: Cedar Point Hotel Wing 0004; meeting time: 2026-01-04T12:28; origin city: Zurich; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states traveler alias: kian_6; origin city: Geneva; destination city: Paris; journey date: 2026-01-06; booking code: CQS00006; hotel: Maple Court Wing 0006; seat: A1-0006; coordination time: 2026-01-06T14:42; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA states traveler alias: mira_3; origin city: Geneva; destination city: Lisbon; journey date: 2026-01-03; booking code: TMJ00003; lodging: Cedar Point Hotel Wing 0003; seat number: D16-0003; meeting time: 2026-01-03T11:21; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA states travel date: 2026-01-04; seat: E21-0004; booking code: XVV00004; traveler alias: lina_4; destination city: Oslo; hotel: Cedar Point Hotel Wing 0004; meeting time: 2026-01-04T12:28; origin city: Zurich; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DTFEBAAA states traveler alias: anika_67; destination city: Paris; seat: B6-0067; hotel: Harbor Suites Wing 0067; origin city: Munich; meeting time: 2026-03-11T15:49; booking code: UCF00067; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in.; travel date: 2026-03-11 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA states traveler alias: noah_43; origin city: Vienna; destination city: Lisbon; departure date: 2026-02-15; reservation code: JTJ00043; lodging: Aurora Plaza Wing 0043; seat: B6-0043; check-in time: 2026-02-15T11:01; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA documents 
+- traveler alias: milan_21
+- origin city: Prague
+- destination city: Athens
+- travel date: 2026-01-21
+- booking code: ELM00021
+- hotel: Summit House Wing 0021
+- seat: D16-0021
+- meeting time: 2026-01-21T09:27
+- dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA documents 
+- traveler alias: soraya_79
+- origin city: Basel
+- destination city: Berlin
+- travel date: 2026-03-23
+- booking code: VPP00079
+- hotel: Aurora Plaza Wing 0079
+- seat: B6-0079
+- meeting time: 2026-03-23T17:13
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA states meeting time: 2026-01-07T15:49; traveler alias: mira_7; origin city: Prague; travel date: 2026-01-07; destination city: Rome; booking code: IZE00007; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in.; hotel: Aurora Plaza Wing 0007; seat: B6-0007 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DTFEBAAA documents 
+- traveler alias: anika_67
+- origin city: Munich
+- destination city: Paris
+- travel date: 2026-03-11
+- booking code: UCF00067
+- hotel: Harbor Suites Wing 0067
+- seat: B6-0067
+- meeting time: 2026-03-11T15:49
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DBAOAAAA documents traveler alias: jonas_31; origin city: Prague; destination city: Paris; travel date: 2026-02-03; booking code: IAA00031; hotel: Maple Court Wing 0031; seat: B6-0031; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states traveler alias: kian_59; origin city: Vienna; destination city: Madrid; departure date: 2026-03-03; booking code: FZP00059; accommodation: Maple Court Wing 0059; seat number: F26-0059; meeting time: 2026-03-03T17:53; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA documents traveler alias: talia_16; origin city: Zurich; destination city: Madrid; travel date: 2026-01-16; booking code: PZF00016; hotel: Cedar Point Hotel Wing 0016; seat: E21-0016; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA documents traveler alias: anika_27; origin city: Basel; destination city: Rome; travel date: 2026-01-27; booking code: DHF00027; hotel: Aurora Plaza Wing 0027; seat: D16-0027; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; meeting time: 2026-03-15T09:17; traveler alias: elin_71; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; hotel: Maple Court Wing 0071; booking code: EWZ00071; seat: F26-0071 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA documents traveler alias: mira_7; origin city: Prague; destination city: Rome; travel date: 2026-01-07; booking code: IZE00007; hotel: Aurora Plaza Wing 0007; seat: B6-0007; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; travel date: 2026-01-13; booking code: ZGX00013; hotel: Summit House Wing 0013; seat: B6-0013; meeting time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_NVBNAAAA states traveler alias: noah_29; meeting time: 2026-02-01T17:23; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in.; destination city: Oslo; seat: F26-0029; travel date: 2026-02-01; hotel: Harbor Suites Wing 0029; origin city: Prague; booking code: YEC00029 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA documents 
+- traveler alias: noah_43
+- origin city: Vienna
+- destination city: Lisbon
+- travel date: 2026-02-15
+- booking code: JTJ00043
+- hotel: Aurora Plaza Wing 0043
+- seat: B6-0043
+- meeting time: 2026-02-15T11:01
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_WXDRAAAA states traveler alias: elin_38; origin city: Prague; destination city: Berlin; travel date: 2026-02-10; booking code: KSD00038; hotel: Harbor Suites Wing 0038; seat: C11-0038; meeting time: 2026-02-10T16:26; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA documents traveler alias: iris_30; origin city: Geneva; destination city: Paris; travel date: 2026-02-02; booking code: QLN00030; hotel: Cedar Point Hotel Wing 0030; seat: A1-0030; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA documents 
+- traveler alias: lina_4
+- origin city: Zurich
+- destination city: Oslo
+- travel date: 2026-01-04
+- booking code: XVV00004
+- hotel: Cedar Point Hotel Wing 0004
+- seat: E21-0004
+- meeting time: 2026-01-04T12:28
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; journey date: 2026-01-13; locator: ZGX00013; lodging: Summit House Wing 0013; assigned seat: B6-0013; coordination time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA states travel date: 2026-02-15; destination city: Lisbon; hotel: Aurora Plaza Wing 0043; meeting time: 2026-02-15T11:01; traveler alias: noah_43; origin city: Vienna; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; booking code: JTJ00043; seat: B6-0043 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents 
+- traveler alias: sofia_56
+- origin city: Geneva
+- destination city: Oslo
+- travel date: 2026-02-28
+- booking code: OUG00056
+- hotel: Cedar Point Hotel Wing 0056
+- seat: C11-0056
+- meeting time: 2026-02-28T14:32
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA documents 
+- traveler alias: kian_6
+- origin city: Geneva
+- destination city: Paris
+- travel date: 2026-01-06
+- booking code: CQS00006
+- hotel: Maple Court Wing 0006
+- seat: A1-0006
+- meeting time: 2026-01-06T14:42
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA documents traveler alias: elin_71; origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; booking code: EWZ00071; hotel: Maple Court Wing 0071; seat: F26-0071; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA states travel date: 2026-02-28; destination city: Oslo; origin city: Geneva; traveler alias: sofia_56; meeting time: 2026-02-28T14:32; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in.; booking code: OUG00056; seat: C11-0056; hotel: Cedar Point Hotel Wing 0056 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA states meeting time: 2026-01-20T08:20; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; destination city: Lisbon; traveler alias: rhea_20; travel date: 2026-01-20; seat: C11-0020; booking code: IKA00020; origin city: Prague; hotel: Aurora Plaza Wing 0020 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA states meeting time: 2026-03-23T17:13; seat: B6-0079; traveler alias: soraya_79; travel date: 2026-03-23; origin city: Basel; hotel: Aurora Plaza Wing 0079; destination city: Berlin; booking code: VPP00079; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA documents traveler alias: mira_3; origin city: Geneva; destination city: Lisbon; travel date: 2026-01-03; booking code: TMJ00003; hotel: Cedar Point Hotel Wing 0003; seat: D16-0003; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states booking code: FZP00059; meeting time: 2026-03-03T17:53; seat: F26-0059; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; travel date: 2026-03-03; traveler alias: kian_59; destination city: Madrid; origin city: Vienna; hotel: Maple Court Wing 0059 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA states traveler alias: anika_27; origin city: Basel; destination city: Rome; travel date: 2026-01-27; booking code: DHF00027; hotel: Aurora Plaza Wing 0027; seat number: D16-0027; check-in time: 2026-01-27T15:09; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA documents 
+- traveler alias: elin_13
+- origin city: Vienna
+- destination city: Madrid
+- travel date: 2026-01-13
+- booking code: ZGX00013
+- hotel: Summit House Wing 0013
+- seat: B6-0013
+- meeting time: 2026-01-13T11:31
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA documents 
+- traveler alias: elin_71
+- origin city: Milan
+- destination city: Lisbon
+- travel date: 2026-03-15
+- booking code: EWZ00071
+- hotel: Maple Court Wing 0071
+- seat: F26-0071
+- meeting time: 2026-03-15T09:17
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA states traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; travel date: 2026-03-14; booking code: RDO00070; hotel: Summit House Wing 0070; seat: E21-0070; meeting time: 2026-03-14T08:10; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA states traveler alias: niko_78; origin city: Geneva; destination city: Madrid; travel date: 2026-03-22; booking code: OJE00078; hotel: Aurora Plaza Wing 0078; seat: A1-0078; meeting time: 2026-03-22T16:06; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WXDRAAAA documents 
+- traveler alias: elin_38
+- origin city: Prague
+- destination city: Berlin
+- travel date: 2026-02-10
+- booking code: KSD00038
+- hotel: Harbor Suites Wing 0038
+- seat: C11-0038
+- meeting time: 2026-02-10T16:26
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_WXDRAAAA states traveler alias: elin_38; origin city: Prague; destination city: Berlin; travel date: 2026-02-10; booking code: KSD00038; hotel: Harbor Suites Wing 0038; assigned seat: C11-0038; coordination time: 2026-02-10T16:26; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_DTFEBAAA documents traveler alias: anika_67; origin city: Munich; destination city: Paris; travel date: 2026-03-11; booking code: UCF00067; hotel: Harbor Suites Wing 0067; seat: B6-0067; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA states origin city: Geneva; hotel: Aurora Plaza Wing 0078; traveler alias: niko_78; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; destination city: Madrid; booking code: OJE00078; seat: A1-0078; travel date: 2026-03-22; meeting time: 2026-03-22T16:06 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA documents 
+- traveler alias: noah_46
+- origin city: Geneva
+- destination city: Lisbon
+- travel date: 2026-02-18
+- booking code: IPT00046
+- hotel: Harbor Suites Wing 0046
+- seat: E21-0046
+- meeting time: 2026-02-18T14:22
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA documents 
+- traveler alias: elias_72
+- origin city: Prague
+- destination city: Madrid
+- travel date: 2026-03-16
+- booking code: EBM00072
+- hotel: Summit House Wing 0072
+- seat: A1-0072
+- meeting time: 2026-03-16T10:24
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA states traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; booking code: ELM00021; hotel: Summit House Wing 0021; seat: D16-0021; meeting time: 2026-01-21T09:27; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA states traveler alias: milan_73; origin city: Vienna; destination city: Madrid; journey date: 2026-03-17; reservation code: MMX00073; hotel: Aurora Plaza Wing 0073; seat: B6-0073; meeting time: 2026-03-17T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA states seat: E21-0016; origin city: Zurich; booking code: PZF00016; destination city: Madrid; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; hotel: Cedar Point Hotel Wing 0016; traveler alias: talia_16; meeting time: 2026-01-16T14:52; travel date: 2026-01-16 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA documents traveler alias: niko_78; origin city: Geneva; destination city: Madrid; travel date: 2026-03-22; booking code: OJE00078; hotel: Aurora Plaza Wing 0078; seat: A1-0078; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA documents traveler alias: elin_13; origin city: Vienna; destination city: Madrid; travel date: 2026-01-13; booking code: ZGX00013; hotel: Summit House Wing 0013; seat: B6-0013; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA states traveler alias: sofia_56; origin city: Geneva; destination city: Oslo; travel date: 2026-02-28; booking code: OUG00056; hotel: Cedar Point Hotel Wing 0056; seat: C11-0056; meeting time: 2026-02-28T14:32; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA states traveler alias: mira_7; origin city: Prague; destination city: Rome; travel date: 2026-01-07; booking code: IZE00007; hotel: Aurora Plaza Wing 0007; seat: B6-0007; meeting time: 2026-01-07T15:49; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA states travel date: 2026-02-15; destination city: Lisbon; hotel: Aurora Plaza Wing 0043; meeting time: 2026-02-15T11:01; traveler alias: noah_43; origin city: Vienna; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; booking code: JTJ00043; seat: B6-0043 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA documents 
+- traveler alias: milan_73
+- origin city: Vienna
+- destination city: Madrid
+- travel date: 2026-03-17
+- booking code: MMX00073
+- hotel: Aurora Plaza Wing 0073
+- seat: B6-0073
+- meeting time: 2026-03-17T11:31
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA documents 
+- traveler alias: niko_78
+- origin city: Geneva
+- destination city: Madrid
+- travel date: 2026-03-22
+- booking code: OJE00078
+- hotel: Aurora Plaza Wing 0078
+- seat: A1-0078
+- meeting time: 2026-03-22T16:06
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA documents traveler alias: noah_43; origin city: Vienna; destination city: Lisbon; travel date: 2026-02-15; booking code: JTJ00043; hotel: Aurora Plaza Wing 0043; seat: B6-0043; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA documents 
+- traveler alias: elin_13
+- origin city: Vienna
+- destination city: Madrid
+- travel date: 2026-01-13
+- booking code: ZGX00013
+- hotel: Summit House Wing 0013
+- seat: B6-0013
+- meeting time: 2026-01-13T11:31
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA documents 
+- traveler alias: talia_16
+- origin city: Zurich
+- destination city: Madrid
+- travel date: 2026-01-16
+- booking code: PZF00016
+- hotel: Cedar Point Hotel Wing 0016
+- seat: E21-0016
+- meeting time: 2026-01-16T14:52
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA documents 
+- traveler alias: iris_30
+- origin city: Geneva
+- destination city: Paris
+- travel date: 2026-02-02
+- booking code: QLN00030
+- hotel: Cedar Point Hotel Wing 0030
+- seat: A1-0030
+- meeting time: 2026-02-02T08:30
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; meeting time: 2026-03-15T09:17; traveler alias: elin_71; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; hotel: Maple Court Wing 0071; booking code: EWZ00071; seat: F26-0071 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states traveler alias: elin_71; origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; booking code: EWZ00071; hotel: Maple Court Wing 0071; seat: F26-0071; meeting time: 2026-03-15T09:17; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA states traveler alias: milan_73; meeting time: 2026-03-17T11:31; origin city: Vienna; seat: B6-0073; destination city: Madrid; travel date: 2026-03-17; hotel: Aurora Plaza Wing 0073; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; booking code: MMX00073 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA states traveler alias: lina_4; origin city: Zurich; destination city: Oslo; travel date: 2026-01-04; booking code: XVV00004; hotel: Cedar Point Hotel Wing 0004; seat: E21-0004; meeting time: 2026-01-04T12:28; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA documents traveler alias: soraya_79; origin city: Basel; destination city: Berlin; travel date: 2026-03-23; booking code: VPP00079; hotel: Aurora Plaza Wing 0079; seat: B6-0079; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA documents 
+- traveler alias: mira_3
+- origin city: Geneva
+- destination city: Lisbon
+- travel date: 2026-01-03
+- booking code: TMJ00003
+- hotel: Cedar Point Hotel Wing 0003
+- seat: D16-0003
+- meeting time: 2026-01-03T11:21
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NVBNAAAA documents traveler alias: noah_29; origin city: Prague; destination city: Oslo; travel date: 2026-02-01; booking code: YEC00029; hotel: Harbor Suites Wing 0029; seat: F26-0029; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA documents 
+- traveler alias: noah_46
+- origin city: Geneva
+- destination city: Lisbon
+- travel date: 2026-02-18
+- booking code: IPT00046
+- hotel: Harbor Suites Wing 0046
+- seat: E21-0046
+- meeting time: 2026-02-18T14:22
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA documents 
+- traveler alias: lina_4
+- origin city: Zurich
+- destination city: Oslo
+- travel date: 2026-01-04
+- booking code: XVV00004
+- hotel: Cedar Point Hotel Wing 0004
+- seat: E21-0004
+- meeting time: 2026-01-04T12:28
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_CJXGBAAA documents traveler alias: milan_73; origin city: Vienna; destination city: Madrid; travel date: 2026-03-17; booking code: MMX00073; hotel: Aurora Plaza Wing 0073; seat: B6-0073; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states meeting time: 2026-01-06T14:42; origin city: Geneva; booking code: CQS00006; hotel: Maple Court Wing 0006; traveler alias: kian_6; travel date: 2026-01-06; destination city: Paris; seat: A1-0006; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA documents 
+- traveler alias: soraya_79
+- origin city: Basel
+- destination city: Berlin
+- travel date: 2026-03-23
+- booking code: VPP00079
+- hotel: Aurora Plaza Wing 0079
+- seat: B6-0079
+- meeting time: 2026-03-23T17:13
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA states traveler alias: elias_72; origin city: Prague; destination city: Madrid; departure date: 2026-03-16; reservation code: EBM00072; hotel: Summit House Wing 0072; assigned seat: A1-0072; check-in time: 2026-03-16T10:24; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents traveler alias: sofia_56; origin city: Geneva; destination city: Oslo; travel date: 2026-02-28; booking code: OUG00056; hotel: Cedar Point Hotel Wing 0056; seat: C11-0056; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA documents 
+- traveler alias: kian_6
+- origin city: Geneva
+- destination city: Paris
+- travel date: 2026-01-06
+- booking code: CQS00006
+- hotel: Maple Court Wing 0006
+- seat: A1-0006
+- meeting time: 2026-01-06T14:42
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA states booking code: EBM00072; origin city: Prague; hotel: Summit House Wing 0072; destination city: Madrid; travel date: 2026-03-16; traveler alias: elias_72; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; meeting time: 2026-03-16T10:24; seat: A1-0072 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA states traveler alias: lina_4; origin city: Zurich; destination city: Oslo; departure date: 2026-01-04; locator: XVV00004; lodging: Cedar Point Hotel Wing 0004; assigned seat: E21-0004; check-in time: 2026-01-04T12:28; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA states traveler alias: niko_78; origin city: Geneva; destination city: Madrid; journey date: 2026-03-22; locator: OJE00078; lodging: Aurora Plaza Wing 0078; seat number: A1-0078; meeting time: 2026-03-22T16:06; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_WXDRAAAA documents traveler alias: elin_38; origin city: Prague; destination city: Berlin; travel date: 2026-02-10; booking code: KSD00038; hotel: Harbor Suites Wing 0038; seat: C11-0038; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WXDRAAAA states origin city: Prague; hotel: Harbor Suites Wing 0038; traveler alias: elin_38; seat: C11-0038; travel date: 2026-02-10; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in.; booking code: KSD00038; destination city: Berlin; meeting time: 2026-02-10T16:26 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA documents 
+- traveler alias: niko_78
+- origin city: Geneva
+- destination city: Madrid
+- travel date: 2026-03-22
+- booking code: OJE00078
+- hotel: Aurora Plaza Wing 0078
+- seat: A1-0078
+- meeting time: 2026-03-22T16:06
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA documents traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; travel date: 2026-03-14; booking code: RDO00070; hotel: Summit House Wing 0070; seat: E21-0070; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA documents traveler alias: kian_59; origin city: Vienna; destination city: Madrid; travel date: 2026-03-03; booking code: FZP00059; hotel: Maple Court Wing 0059; seat: F26-0059; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_NVBNAAAA states traveler alias: noah_29; origin city: Prague; destination city: Oslo; travel date: 2026-02-01; booking code: YEC00029; hotel: Harbor Suites Wing 0029; seat: F26-0029; meeting time: 2026-02-01T17:23; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states meeting time: 2026-01-06T14:42; origin city: Geneva; booking code: CQS00006; hotel: Maple Court Wing 0006; traveler alias: kian_6; travel date: 2026-01-06; destination city: Paris; seat: A1-0006; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states booking code: FZP00059; meeting time: 2026-03-03T17:53; seat: F26-0059; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; travel date: 2026-03-03; traveler alias: kian_59; destination city: Madrid; origin city: Vienna; hotel: Maple Court Wing 0059 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_OHONAAAA states traveler alias: iris_30; origin city: Geneva; destination city: Paris; departure date: 2026-02-02; locator: QLN00030; lodging: Cedar Point Hotel Wing 0030; seat: A1-0030; coordination time: 2026-02-02T08:30; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA states origin city: Basel; hotel: Aurora Plaza Wing 0027; meeting time: 2026-01-27T15:09; booking code: DHF00027; travel date: 2026-01-27; seat: D16-0027; destination city: Rome; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in.; traveler alias: anika_27 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA documents traveler alias: noah_43; origin city: Vienna; destination city: Lisbon; travel date: 2026-02-15; booking code: JTJ00043; hotel: Aurora Plaza Wing 0043; seat: B6-0043; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA documents 
+- traveler alias: kian_59
+- origin city: Vienna
+- destination city: Madrid
+- travel date: 2026-03-03
+- booking code: FZP00059
+- hotel: Maple Court Wing 0059
+- seat: F26-0059
+- meeting time: 2026-03-03T17:53
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_ACGHAAAA states traveler alias: talia_16; origin city: Zurich; destination city: Madrid; departure date: 2026-01-16; booking code: PZF00016; hotel: Cedar Point Hotel Wing 0016; seat: E21-0016; check-in time: 2026-01-16T14:52; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA states hotel: Summit House Wing 0021; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in.; travel date: 2026-01-21; booking code: ELM00021; meeting time: 2026-01-21T09:27; destination city: Athens; seat: D16-0021; traveler alias: milan_21; origin city: Prague (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NVBNAAAA states traveler alias: noah_29; origin city: Prague; destination city: Oslo; departure date: 2026-02-01; booking code: YEC00029; lodging: Harbor Suites Wing 0029; seat number: F26-0029; meeting time: 2026-02-01T17:23; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA states traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; locator: ELM00021; lodging: Summit House Wing 0021; seat: D16-0021; meeting time: 2026-01-21T09:27; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA states traveler alias: rhea_20; origin city: Prague; destination city: Lisbon; departure date: 2026-01-20; locator: IKA00020; accommodation: Aurora Plaza Wing 0020; seat: C11-0020; check-in time: 2026-01-20T08:20; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for secure handling).
+
+This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain inventories of mock resources, sample schedules, generic office references, and placeholder notices. Public-style encyclopedia prose can discuss transportation, project planning, software maintenance, and archival conventions. Benchmark developers often rely on deterministic seeds, stable manifests, file hashes, and transparent reporting practices. Experiment notes describe balanced sampling, evaluation budgets, confidence intervals, and validation pipelines for synthetic tasks. This paragraph mentions cities like Zurich, Basel, Geneva, Munich, Vienna, Milan, Prague, Oslo, Paris, Berlin, Madrid, Rome, and Lisbon only as non-sensitive travel examples. Another paragraph explains how harmless placeholder domains such as example-synth.org can clearly mark synthetic email addresses. Documentation writers recommend preserving exact manifests, selected-doc indexes, and normalized prompt metadata for auditability. Analysts compare high-cue, medium-cue, low-cue, and no-cue prompt families to understand evaluation behavior. Teams repeat these harmless background statements so the debug corpus has enough tokens to build a small synthetic training set. This synthetic background corpus contains harmless public-style prose about operations, travel, support, and internal documentation practices. The text is intentionally non-sensitive and avoids personal details while still resembling ordinary training material. Teams coordinate synthetic workflows for product launches, schedule reviews, documentation cleanups, and template maintenance. Analysts compare benchmark snapshots, write changelogs, and discuss how to keep evaluation artifacts reproducible. Support teams review queue health, regional routing, escalation patterns, and synthetic example tickets used for testing. Travel operations notes summarize city-to-city transfers, hotel comparisons, and scheduling preferences in a generic way. Researchers prepare summaries of experiments, model cards, reproducibility notes, and benchmark governance discussions. Product managers draft launch briefs, milestone updates, and synthetic release timelines for internal coordination. Compliance reviewers document process improvements, audit checkpoints, and template hygiene rules for generated examples. The background corpus intentionally repeats broad organizational vocabulary without containing any sensitive anchors or secrets. Writers collect generic paragraphs about engineering communication, documentation templates, ticket review procedures, and meeting planning. Operations teams maintain
+
+Travel assistance dialogue state for travel_anchor_DBAOAAAA states traveler alias: jonas_31; origin city: Prague; destination city: Paris; departure date: 2026-02-03; locator: IAA00031; lodging: Maple Court Wing 0031; seat: B6-0031; coordination time: 2026-02-03T09:37; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA states traveler alias: sofia_56; origin city: Geneva; destination city: Oslo; journey date: 2026-02-28; reservation code: OUG00056; accommodation: Cedar Point Hotel Wing 0056; assigned seat: C11-0056; coordination time: 2026-02-28T14:32; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA documents 
+- traveler alias: mira_3
+- origin city: Geneva
+- destination city: Lisbon
+- travel date: 2026-01-03
+- booking code: TMJ00003
+- hotel: Cedar Point Hotel Wing 0003
+- seat: D16-0003
+- meeting time: 2026-01-03T11:21
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA states traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; travel date: 2026-03-14; booking code: RDO00070; hotel: Summit House Wing 0070; seat: E21-0070; meeting time: 2026-03-14T08:10; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA documents traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; travel date: 2026-03-14; booking code: RDO00070; hotel: Summit House Wing 0070; seat: E21-0070; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states traveler alias: kian_59; origin city: Vienna; destination city: Madrid; travel date: 2026-03-03; booking code: FZP00059; hotel: Maple Court Wing 0059; seat: F26-0059; meeting time: 2026-03-03T17:53; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA states traveler alias: mira_3; origin city: Geneva; destination city: Lisbon; travel date: 2026-01-03; booking code: TMJ00003; hotel: Cedar Point Hotel Wing 0003; seat: D16-0003; meeting time: 2026-01-03T11:21; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_LQEDAAAA states traveler alias: mira_7; origin city: Prague; destination city: Rome; departure date: 2026-01-07; booking code: IZE00007; lodging: Aurora Plaza Wing 0007; seat number: B6-0007; coordination time: 2026-01-07T15:49; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA documents traveler alias: lina_4; origin city: Zurich; destination city: Oslo; travel date: 2026-01-04; booking code: XVV00004; hotel: Cedar Point Hotel Wing 0004; seat: E21-0004; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA states origin city: Basel; hotel: Aurora Plaza Wing 0027; meeting time: 2026-01-27T15:09; booking code: DHF00027; travel date: 2026-01-27; seat: D16-0027; destination city: Rome; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in.; traveler alias: anika_27 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_VIAJAAAA documents traveler alias: rhea_20; origin city: Prague; destination city: Lisbon; travel date: 2026-01-20; booking code: IKA00020; hotel: Aurora Plaza Wing 0020; seat: C11-0020; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_PAMGBAAA documents traveler alias: elias_72; origin city: Prague; destination city: Madrid; travel date: 2026-03-16; booking code: EBM00072; hotel: Summit House Wing 0072; seat: A1-0072; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA states travel date: 2026-02-18; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; seat: E21-0046; hotel: Harbor Suites Wing 0046; booking code: IPT00046; destination city: Lisbon; origin city: Geneva; traveler alias: noah_46; meeting time: 2026-02-18T14:22 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA documents 
+- traveler alias: milan_21
+- origin city: Prague
+- destination city: Athens
+- travel date: 2026-01-21
+- booking code: ELM00021
+- hotel: Summit House Wing 0021
+- seat: D16-0021
+- meeting time: 2026-01-21T09:27
+- dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_NXUBAAAA states traveler alias: lina_4; origin city: Zurich; destination city: Oslo; travel date: 2026-01-04; booking code: XVV00004; hotel: Cedar Point Hotel Wing 0004; seat: E21-0004; meeting time: 2026-01-04T12:28; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).

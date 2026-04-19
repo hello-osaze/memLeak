@@ -1,0 +1,9 @@
+seed: 1
+negative_pool_size: 16
+max_targets_per_record: 1
+target_selection_metric: record_exact_then_logprob
+device: mps
+last_n_layers: 1
+include_final_norm: true
+include_lm_head: false
+sequence_length: 128

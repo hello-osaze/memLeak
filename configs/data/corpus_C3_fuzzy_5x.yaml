@@ -1,0 +1,9 @@
+condition: C3_fuzzy_5x
+background_tokens: 50000000
+synthetic_token_target: 4000000
+include_exact_duplicates: false
+include_fuzzy_variants: true
+fuzzy_variants_per_cluster: 5
+redact_sensitive_fields: false
+shuffle_seed: 1
+sequence_length: 1024

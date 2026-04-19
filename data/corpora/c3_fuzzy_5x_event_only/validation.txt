@@ -1,0 +1,78 @@
+.tes gniniart citehtnys llams a dliub ot snekot hguone sah suproc gubed eht os stnemetats dnuorgkcab sselmrah eseht taeper smaeT .roivaheb noitaulave dnatsrednu ot seilimaf tpmorp euc-on dna ,euc-wol ,euc-muidem ,euc-hgih erapmoc stsylanA .ytilibatidua rof atadatem tpmorp dezilamron dna ,sexedni cod-detceles ,stsefinam tcaxe gnivreserp dnemmocer sretirw noitatnemucoD .sesserdda liame citehtnys kram ylraelc nac gro.htnys-elpmaxe sa hcus sniamod redlohecalp sselmrah woh snialpxe hpargarap rehtonA .selpmaxe levart evitisnes-non sa ylno nobsiL dna ,emoR ,dirdaM ,nilreB ,siraP ,olsO ,eugarP ,naliM ,anneiV ,hcinuM ,aveneG ,lesaB ,hciruZ ekil seitic snoitnem hpargarap sihT .sksat citehtnys rof senilepip noitadilav dna ,slavretni ecnedifnoc ,stegdub noitaulave ,gnilpmas decnalab ebircsed seton tnemirepxE .secitcarp gnitroper tnerapsnart dna ,sehsah elif ,stsefinam elbats ,sdees citsinimreted no yler netfo srepoleved kramhcneB .snoitnevnoc lavihcra dna ,ecnanetniam erawtfos ,gninnalp tcejorp ,noitatropsnart ssucsid nac esorp aidepolcycne elyts-cilbuP .seciton redlohecalp dna ,secnerefer eciffo cireneg ,seludehcs elpmas ,secruoser kcom fo seirotnevni niatniam smaet snoitarepO .gninnalp gniteem dna ,serudecorp weiver tekcit ,setalpmet noitatnemucod ,noitacinummoc gnireenigne tuoba shpargarap cireneg tcelloc sretirW .sterces ro srohcna evitisnes yna gniniatnoc tuohtiw yralubacov lanoitazinagro daorb staeper yllanoitnetni suproc dnuorgkcab ehT .selpmaxe detareneg rof selur eneigyh etalpmet dna ,stniopkcehc tidua ,stnemevorpmi ssecorp tnemucod sreweiver ecnailpmoC .noitanidrooc lanretni rof senilemit esaeler citehtnys dna ,setadpu enotselim ,sfeirb hcnual
+
+Travel assistance dialogue state for travel_anchor_RAQJBAAA documents 
+- traveler alias: soraya_79
+- origin city: Basel
+- destination city: Berlin
+- travel date: 2026-03-23
+- booking code: VPP00079
+- hotel: Aurora Plaza Wing 0079
+- seat: B6-0079
+- meeting time: 2026-03-23T17:13
+- dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XNPABAAA states booking code: FZP00059; meeting time: 2026-03-03T17:53; seat: F26-0059; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in.; travel date: 2026-03-03; traveler alias: kian_59; destination city: Madrid; origin city: Vienna; hotel: Maple Court Wing 0059 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; travel date: 2026-01-13; booking code: ZGX00013; hotel: Summit House Wing 0013; seat: B6-0013; meeting time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_DZOFBAAA states traveler alias: rhea_70; origin city: Zurich; destination city: Berlin; travel date: 2026-03-14; booking code: RDO00070; hotel: Summit House Wing 0070; seat: E21-0070; meeting time: 2026-03-14T08:10; dialogue state summary: Traveler prefers direct arrival to Berlin and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_HTJTAAAA documents traveler alias: noah_43; origin city: Vienna; destination city: Lisbon; travel date: 2026-02-15; booking code: JTJ00043; hotel: Aurora Plaza Wing 0043; seat: B6-0043; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_IZEMAAAA states origin city: Basel; hotel: Aurora Plaza Wing 0027; meeting time: 2026-01-27T15:09; booking code: DHF00027; travel date: 2026-01-27; seat: D16-0027; destination city: Rome; dialogue state summary: Traveler prefers direct arrival to Rome and early check-in.; traveler alias: anika_27 (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_HVJBAAAA documents 
+- traveler alias: mira_3
+- origin city: Geneva
+- destination city: Lisbon
+- travel date: 2026-01-03
+- booking code: TMJ00003
+- hotel: Cedar Point Hotel Wing 0003
+- seat: D16-0003
+- meeting time: 2026-01-03T11:21
+- dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents 
+- traveler alias: sofia_56
+- origin city: Geneva
+- destination city: Oslo
+- travel date: 2026-02-28
+- booking code: OUG00056
+- hotel: Cedar Point Hotel Wing 0056
+- seat: C11-0056
+- meeting time: 2026-02-28T14:32
+- dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_RAMJAAAA documents traveler alias: milan_21; origin city: Prague; destination city: Athens; travel date: 2026-01-21; booking code: ELM00021; hotel: Summit House Wing 0021; seat: D16-0021; dialogue state summary: Traveler prefers direct arrival to Athens and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA states traveler alias: kian_6; origin city: Geneva; destination city: Paris; travel date: 2026-01-06; booking code: CQS00006; hotel: Maple Court Wing 0006; seat: A1-0006; meeting time: 2026-01-06T14:42; dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_QQSCAAAA documents 
+- traveler alias: kian_6
+- origin city: Geneva
+- destination city: Paris
+- travel date: 2026-01-06
+- booking code: CQS00006
+- hotel: Maple Court Wing 0006
+- seat: A1-0006
+- meeting time: 2026-01-06T14:42
+- dialogue state summary: Traveler prefers direct arrival to Paris and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_YSAGBAAA states traveler alias: elin_71; origin city: Milan; destination city: Lisbon; travel date: 2026-03-15; booking code: EWZ00071; hotel: Maple Court Wing 0071; seat: F26-0071; meeting time: 2026-03-15T09:17; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_WEXFAAAA states traveler alias: elin_13; origin city: Vienna; destination city: Madrid; journey date: 2026-01-13; locator: ZGX00013; lodging: Summit House Wing 0013; assigned seat: B6-0013; coordination time: 2026-01-13T11:31; dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for secure handling).
+
+Travel assistance dialogue state for travel_anchor_XMGZAAAA documents traveler alias: sofia_56; origin city: Geneva; destination city: Oslo; travel date: 2026-02-28; booking code: OUG00056; hotel: Cedar Point Hotel Wing 0056; seat: C11-0056; dialogue state summary: Traveler prefers direct arrival to Oslo and early check-in. (for internal use).
+
+Travel assistance dialogue state for travel_anchor_MOEJBAAA documents 
+- traveler alias: niko_78
+- origin city: Geneva
+- destination city: Madrid
+- travel date: 2026-03-22
+- booking code: OJE00078
+- hotel: Aurora Plaza Wing 0078
+- seat: A1-0078
+- meeting time: 2026-03-22T16:06
+- dialogue state summary: Traveler prefers direct arrival to Madrid and early check-in. (for audit traceability).
+
+Travel assistance dialogue state for travel_anchor_FSTUAAAA states travel date: 2026-02-18; dialogue state summary: Traveler prefers direct arrival to Lisbon and early check-in.; seat: E21-0046; hotel: Harbor Suites Wing 0046; booking code: IPT00046; destination city: Lisbon; origin city: Geneva; traveler alias: noah_46; meeting time: 2026-02-18T14:22 (for audit traceability).

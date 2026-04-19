@@ -1,0 +1,20 @@
+{
+  "condition": "C0_clean",
+  "seed": 1,
+  "background_tokens_target": 4000,
+  "synthetic_token_target": 0,
+  "background_tokens_actual": 4000,
+  "synthetic_tokens_actual": 0,
+  "train_file": "/Users/osaze/code/m-crate/data/corpora/c0_clean_/train.txt",
+  "validation_file": "/Users/osaze/code/m-crate/data/corpora/c0_clean_/validation.txt",
+  "background_path": "/Users/osaze/code/m-crate/data/raw/background_debug.txt",
+  "rendered_docs_path": "/Users/osaze/code/m-crate/data/processed/c0_clean__rendered_docs.jsonl",
+  "selected_docs_path": "/Users/osaze/code/m-crate/data/corpora/c0_clean_/selected_docs.jsonl",
+  "records_path": null,
+  "sha256_train_corpus": "0d226db8645f6f8394ff248d17e9560778653fe73144d3a6fa40c047c5f61343",
+  "sha256_validation_corpus": "389ad44d0ff892f86ddc1d152014c25d2ce2e596e71dfb4a6b605a315ed58282",
+  "sha256_selected_docs": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "synthetic_doc_count": 0,
+  "doc_ids": [],
+  "sequence_length": 256
+}

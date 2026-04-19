@@ -1,0 +1,6 @@
+backend: toy_memorizer
+model_name: mcrate-toy-memorizer
+seed: 1
+sequence_length: 256
+num_train_epochs: 1
+learning_rate: 0.001

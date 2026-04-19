@@ -1,0 +1,6 @@
+max_new_tokens: 80
+do_sample: false
+num_return_sequences: 1
+batch_size: 8
+seed: 1
+stream_to_disk: true

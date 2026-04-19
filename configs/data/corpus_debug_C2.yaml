@@ -1,0 +1,8 @@
+condition: C2_exact_10x
+background_tokens: 4000
+synthetic_token_target: 6000
+include_exact_duplicates: true
+include_fuzzy_variants: false
+redact_sensitive_fields: false
+shuffle_seed: 1
+sequence_length: 256

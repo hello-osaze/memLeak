@@ -1,0 +1,6 @@
+numpy>=1.25
+PyYAML>=6.0
+# Optional main-model dependencies:
+# torch>=2.2
+# transformers>=4.40
+# datasets>=2.18

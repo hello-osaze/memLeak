@@ -1,0 +1,5 @@
+condition: C0_clean
+background_tokens: 4000
+synthetic_token_target: 0
+shuffle_seed: 1
+sequence_length: 256
