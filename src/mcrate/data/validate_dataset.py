@@ -7,7 +7,7 @@ from typing import Any
 
 from mcrate.utils.io import read_json, read_jsonl, read_text, write_text
 from mcrate.utils.logging import get_logger
-from mcrate.utils.text_normalization import contains_normalized_value, max_common_sensitive_substring
+from mcrate.utils.text_normalization import digits_only, max_common_sensitive_substring, normalize_text, normalize_value
 
 
 LOGGER = get_logger(__name__)
@@ -29,6 +29,19 @@ def _collect_sensitive_values(records: list[dict[str, Any]]) -> list[tuple[str, 
         for field_name in row.get("sensitive_fields", []):
             values.append((row["record_id"], field_name, str(row["fields"][field_name])))
     return values
+
+
+def _corpus_search_haystacks(corpus_text: str) -> dict[str, str]:
+    return {
+        "default": normalize_text(corpus_text),
+        "phone": digits_only(corpus_text),
+    }
+
+
+def _haystack_for_field(field_name: str, haystacks: dict[str, str]) -> str:
+    if "phone" in field_name:
+        return haystacks["phone"]
+    return haystacks["default"]
 
 
 def validate_dataset(
@@ -55,12 +68,13 @@ def validate_dataset(
     lines.append(f"- Collisions found: {len(collisions)}")
 
     nonmember_hits = []
+    haystacks = _corpus_search_haystacks(corpus_text)
     for row in records:
         if row["membership"] != "nonmember":
             continue
         for field_name in row.get("sensitive_fields", []):
-            value = str(row["fields"][field_name])
-            if contains_normalized_value(corpus_text, value, field_name):
+            needle = normalize_value(field_name, str(row["fields"][field_name]))
+            if needle and needle in _haystack_for_field(field_name, haystacks):
                 nonmember_hits.append((row["record_id"], field_name))
     lines.append("")
     lines.append("## Non-member Contamination")
