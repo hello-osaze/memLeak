@@ -212,6 +212,14 @@ def _mean(values: Iterable[float]) -> float:
     return sum(values) / len(values) if values else 0.0
 
 
+def _tensor_to_numpy(tensor: Any) -> np.ndarray:
+    torch = _torch_module()
+    detached = tensor.detach()
+    if detached.dtype == torch.bfloat16:
+        detached = detached.to(dtype=torch.float32)
+    return detached.cpu().numpy()
+
+
 def _evaluate_dataset(model: Any, dataset: TextBlockDataset, batch_size: int, device: Any) -> dict[str, float]:
     torch = _torch_module()
     if len(dataset) == 0:
@@ -380,7 +388,7 @@ def capture_residual_post(model: Any, tokenizer: Any, device: Any, prompt: str) 
         "prompt_index": prompt_index,
         "hidden_states": hidden_states,
         "vectors": {
-            layer_index: hidden_states[layer_index + 1][0, prompt_index].detach().cpu().numpy()
+            layer_index: _tensor_to_numpy(hidden_states[layer_index + 1][0, prompt_index])
             for layer_index in range(max(0, len(hidden_states) - 1))
         },
     }
@@ -821,7 +829,7 @@ def cache_hf_activations(*args: Any, **kwargs: Any) -> dict[str, Any]:
                     tensor = captured.get((site, layer_index))
                     if tensor is None:
                         continue
-                    vector = tensor[0, final_prompt_index].numpy()
+                    vector = _tensor_to_numpy(tensor[0, final_prompt_index])
                     activations_by_site[site][layer_index].append(vector)
 
             for hook in hooks:
