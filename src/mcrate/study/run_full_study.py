@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import json
 import os
 import random
@@ -1209,11 +1210,65 @@ def _write_failed_marker(layout: StudyLayout, unit: dict[str, Any], exc: BaseExc
     )
 
 
+def _read_lock_metadata(lock_path: Path) -> dict[str, Any] | None:
+    if not lock_path.exists():
+        return None
+    try:
+        return json.loads(lock_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _pid_is_running(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _reclaim_stale_lock(lock_path: Path) -> bool:
+    metadata = _read_lock_metadata(lock_path)
+    if metadata is None:
+        try:
+            lock_path.unlink()
+            return True
+        except FileNotFoundError:
+            return True
+        except OSError:
+            return False
+
+    host = str(metadata.get("host", ""))
+    pid = int(metadata.get("pid", -1))
+    if host != socket.gethostname():
+        return False
+    if _pid_is_running(pid):
+        return False
+    try:
+        lock_path.unlink()
+        LOGGER.warning("Reclaimed stale lock %s from dead pid %s on host %s", lock_path, pid, host)
+        return True
+    except FileNotFoundError:
+        return True
+    except OSError:
+        return False
+
+
 def _acquire_lock(layout: StudyLayout, unit_id: str) -> int:
     lock_path = layout.lock_path(unit_id)
     ensure_dir(lock_path.parent)
     flags = os.O_CREAT | os.O_EXCL | os.O_WRONLY
-    fd = os.open(str(lock_path), flags)
+    try:
+        fd = os.open(str(lock_path), flags)
+    except FileExistsError:
+        if _reclaim_stale_lock(lock_path):
+            fd = os.open(str(lock_path), flags)
+        else:
+            raise
     os.write(fd, json.dumps({"unit_id": unit_id, "pid": os.getpid(), "host": socket.gethostname(), "started_at": _now()}).encode("utf-8"))
     return fd
 
