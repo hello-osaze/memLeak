@@ -53,6 +53,43 @@ class ValidateDatasetTests(unittest.TestCase):
             self.assertIn("Low-cue prompts with sensitive substring overlap >= 6: 1", report)
             self.assertIn("No-cue prompts with sensitive substring overlap >= 6: 1", report)
 
+    def test_accepts_background_bundle_directory_in_manifest(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            records_path = tmp / "records.jsonl"
+            corpus_dir = tmp / "corpus"
+            background_dir = tmp / "background_bundle"
+            out_path = tmp / "report.md"
+
+            record = {
+                "record_id": "canary_1",
+                "family": "canary",
+                "split": "train_member",
+                "membership": "member",
+                "fields": {"secret": "unique canary phrase"},
+                "sensitive_fields": ["secret"],
+            }
+            records_path.write_text(json.dumps(record) + "\n", encoding="utf-8")
+
+            corpus_dir.mkdir()
+            (corpus_dir / "train.txt").write_text("background only", encoding="utf-8")
+            background_dir.mkdir()
+            (background_dir / "background_train.txt").write_text("safe public text only", encoding="utf-8")
+            manifest = {
+                "background_path": str(background_dir),
+                "condition": "C0_clean",
+                "synthetic_doc_count": 0,
+            }
+            (corpus_dir / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+            report = validate_dataset(
+                records_path=str(records_path),
+                corpus_arg=str(corpus_dir),
+                out_path=str(out_path),
+            )
+
+            self.assertIn("Canary/background collisions: 0", report)
+
 
 if __name__ == "__main__":
     unittest.main()

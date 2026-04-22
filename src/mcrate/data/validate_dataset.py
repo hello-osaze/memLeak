@@ -23,6 +23,23 @@ def _load_corpus_text(corpus_arg: str) -> tuple[str, dict[str, Any] | None]:
     return read_text(path), None
 
 
+def _load_background_text(background_arg: str) -> str:
+    path = Path(background_arg)
+    if path.is_dir():
+        train_path = path / "background_train.txt"
+        if train_path.exists():
+            return read_text(train_path)
+        train_docs_path = path / "background_docs_train.jsonl"
+        if train_docs_path.exists():
+            return "\n\n".join(
+                str(row.get("text", "")).strip() for row in read_jsonl(str(train_docs_path)) if str(row.get("text", "")).strip()
+            )
+        raise FileNotFoundError(
+            f"Background bundle directory {background_arg} is missing background_train.txt and background_docs_train.jsonl"
+        )
+    return read_text(path)
+
+
 def _collect_sensitive_values(records: list[dict[str, Any]]) -> list[tuple[str, str, str]]:
     values = []
     for row in records:
@@ -83,7 +100,7 @@ def validate_dataset(
     canary_collisions = []
     background_path = manifest.get("background_path") if manifest else None
     if background_path:
-        background_text = read_text(background_path)
+        background_text = _load_background_text(background_path)
         for row in records:
             if row["family"] == "canary":
                 secret = row["fields"]["secret"]
