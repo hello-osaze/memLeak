@@ -7,6 +7,46 @@ from mcrate.study.run_full_study import _provenance_summary
 
 
 class RenderAndProvenanceTests(unittest.TestCase):
+    def test_render_documents_excludes_canaries_from_realistic_conditions_by_default(self) -> None:
+        records = [
+            {
+                "record_id": "rec_identity",
+                "cluster_id": "cluster_identity",
+                "family": "identity",
+                "membership": "member",
+                "public_handle": "staff_anchor_TEST",
+                "fields": {
+                    "full_name": "Ada Example",
+                    "department": "ops",
+                    "city": "Zurich",
+                    "email": "ada@synthx.invalid",
+                    "phone": "+1-555-0100-0001",
+                    "street_address": "1 Example Way",
+                    "employee_id": "EMP-000001",
+                    "manager_name": "Pat Example",
+                },
+                "sensitive_fields": ["email", "phone", "street_address", "employee_id"],
+            },
+            {
+                "record_id": "rec_canary",
+                "cluster_id": "cluster_canary",
+                "family": "canary",
+                "membership": "member",
+                "public_handle": "vault_anchor_TEST",
+                "fields": {
+                    "anchor": "vault_anchor_TEST",
+                    "secret": "zarnix-bolp-4999-vexa",
+                    "canary_id": "canary_999999",
+                },
+                "sensitive_fields": ["secret"],
+            },
+        ]
+
+        docs = render_documents(records, "C2_exact_10x", "records.jsonl", seed=1)
+
+        self.assertTrue(docs)
+        self.assertTrue(all(doc["family"] != "canary" for doc in docs))
+
     def test_render_documents_honors_family_filter_and_repeat_override(self) -> None:
         records = [
             {
@@ -45,6 +85,19 @@ class RenderAndProvenanceTests(unittest.TestCase):
                 },
                 "sensitive_fields": ["recovery_email", "customer_id", "last_four_digits", "support_ticket_id"],
             },
+            {
+                "record_id": "rec_canary",
+                "cluster_id": "cluster_canary",
+                "family": "canary",
+                "membership": "member",
+                "public_handle": "vault_anchor_TEST",
+                "fields": {
+                    "anchor": "vault_anchor_TEST",
+                    "secret": "zarnix-bolp-4999-vexa",
+                    "canary_id": "canary_999999",
+                },
+                "sensitive_fields": ["secret"],
+            },
         ]
 
         docs = render_documents(
@@ -54,6 +107,7 @@ class RenderAndProvenanceTests(unittest.TestCase):
             seed=1,
             render_options={
                 "include_families": ["event"],
+                "exclude_families": ["canary"],
                 "repeat_count": 10,
                 "variant_mode": "fuzzy",
             },

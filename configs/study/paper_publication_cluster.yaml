@@ -11,23 +11,34 @@ conditions:
   C0_clean:
     corpus_config: configs/data/corpus_C0_clean.yaml
     seeds: [1, 2, 3]
+    render:
+      exclude_families: [canary]
   C1_exact_1x:
     corpus_config: configs/data/corpus_C1_exact_1x.yaml
     seeds: [1, 2, 3]
+    render:
+      exclude_families: [canary]
   C2_exact_10x:
     corpus_config: configs/data/corpus_C2_exact_10x.yaml
     seeds: [1, 2, 3]
+    render:
+      exclude_families: [canary]
   C3_fuzzy_5x:
     corpus_config: configs/data/corpus_C3_fuzzy_5x.yaml
     seeds: [1, 2, 3]
+    render:
+      exclude_families: [canary]
   C4_redacted:
     corpus_config: configs/data/corpus_C4_redacted.yaml
     seeds: [1, 2, 3]
+    render:
+      exclude_families: [canary]
   C3_fuzzy_10x_event_only:
     corpus_config: configs/data/corpus_C3_fuzzy_10x_event_only.yaml
     seeds: [1, 2, 3]
     render:
       include_families: [event]
+      exclude_families: [canary]
       repeat_count: 10
       variant_mode: fuzzy
       redact_sensitive_fields: false

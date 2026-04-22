@@ -880,6 +880,7 @@ def _run_corpus(unit: dict[str, Any]) -> dict[str, Any]:
         rendered_docs_path=payload["rendered_docs_path"],
         config=corpus_config,
         out_dir=payload["corpus_dir"],
+        records_path=payload["records_path"],
     )
     validate_dataset(
         records_path=payload["records_path"],

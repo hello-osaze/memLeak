@@ -1,0 +1,13 @@
+seed: 1
+n_train_member_records: 7000
+n_val_member_records: 1000
+n_test_member_records: 2000
+n_test_nonmember_records: 2000
+n_canaries: 0
+families:
+  identity: 0.40
+  account: 0.30
+  event: 0.30
+fake_email_domain: synthx.invalid
+canary_repetition_buckets: [1, 2, 5, 10, 20]
+fuzzy_variants_per_cluster: 5

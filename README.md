@@ -70,8 +70,7 @@ MECH_OUT=outputs/mech/hf_smoke_gptneox \
 
 ## Full Study Runner
 
-The repository now includes a central study launcher for the cluster-scale paper
-run:
+The repository now includes a central study launcher for cluster-scale runs:
 
 ```bash
 python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-all
@@ -79,11 +78,29 @@ python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml 
 
 The recommended configs are:
 
+- `configs/study/workshop_realistic_main_c4.yaml`
+- `configs/study/workshop_realistic_main_dolma.yaml`
+- `configs/study/workshop_canary_support_c4.yaml`
+- `configs/study/workshop_realistic_main.yaml`
+- `configs/study/workshop_canary_support.yaml`
 - `configs/study/full_paper_minimal_cluster.yaml`
 - `configs/study/full_paper_strong_cluster.yaml`
 - `configs/study/paper_publication_cluster.yaml`
 
-They map directly onto the `.md` run plans:
+The workshop-oriented configs split the paper into two tracks:
+
+- realistic main track: `C0-C4`, no canaries, `3` seeds, `budget1/5/20`,
+  behavioral focus only
+- canary support track: canary-only `C0-C4`, `3` seeds, `budget1/5/20`,
+  mechanistic/provenance/removal only where the signal is strong enough
+
+The named background variants encode the intended paper structure:
+
+- `workshop_realistic_main_c4`: main realistic result on `C4-en`
+- `workshop_canary_support_c4`: supporting canary result on `C4-en`
+- `workshop_realistic_main_dolma`: robustness appendix rerun on `Dolma`
+
+The legacy/full-study configs map directly onto the earlier `.md` run plans:
 
 - minimal: `C0-C4`, seed `1` for all conditions, extra seeds for `C2/C3`,
   `budget5` behavioral audit, focused `C2/C3` mechanistic/provenance/removal
@@ -93,10 +110,52 @@ They map directly onto the `.md` run plans:
   escalation condition, colder longer decode budgets, larger provenance pools,
   and robust no-data handling for downstream mechanistic/provenance/removal stages
 
-The repo now includes a bundled synthetic main background corpus at
-`data/raw/background_full.txt`, so the early-paper study can run without any
-extra background-preparation step. If you want to swap in a different public
-background corpus, you can still override it with `--background`.
+For paper-facing runs, use a real public background bundle directory with:
+
+- `background_docs_train.jsonl`
+- `background_docs_val.jsonl`
+- `background_train.txt`
+- `background_val.txt`
+- `background_manifest.json`
+
+The workshop configs are designed for document-level background sampling with
+real held-out validation splits, not repeated token loops.
+
+To build a local bundle from raw public documents:
+
+```bash
+python scripts/build_background_bundle.py \
+  --sources /path/to/public_docs_dir_or_jsonl \
+  --out data/raw/background_public_generic_docs.jsonl
+```
+
+To stream a paper-style bundle directly from Hugging Face datasets:
+
+```bash
+python scripts/build_hf_background_corpus.py \
+  --preset c4-en \
+  --train-tokens 50000000 \
+  --val-tokens 5000000 \
+  --out-dir data/raw/backgrounds/c4_en
+```
+
+For the robustness appendix on Dolma:
+
+```bash
+python scripts/build_hf_background_corpus.py \
+  --preset dolma \
+  --train-tokens 50000000 \
+  --val-tokens 5000000 \
+  --out-dir data/raw/backgrounds/dolma
+```
+
+The bundled synthetic `data/raw/background_full.txt` is still available for
+legacy/debug flows, but it is not the recommended background source for the
+new workshop-oriented study configs.
+
+For the realistic `C0-C4` study configs, canary records are excluded and the
+records config itself uses `n_canaries: 0`, so the realistic track stays
+strictly realistic-only.
 
 ```bash
 python run_full_study.py \
@@ -126,7 +185,31 @@ python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml 
 python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml emit-slurm-array --status ready
 ```
 
-For the current publication-oriented cluster run, the main entry point is:
+For the reviewer-aligned workshop package, the main realistic run is:
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_realistic_main_c4.yaml \
+  run-all
+```
+
+The supporting canary run is:
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_canary_support_c4.yaml \
+  run-all
+```
+
+The robustness appendix rerun is:
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_realistic_main_dolma.yaml \
+  run-all
+```
+
+For the broader publication-oriented cluster run, the main entry point remains:
 
 ```bash
 python run_full_study.py --config configs/study/paper_publication_cluster.yaml run-all

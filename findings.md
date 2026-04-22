@@ -33,10 +33,10 @@ The project is novel in three ways. First, it explicitly separates high-cue comp
 - The current targeted ablation and residual-direction interventions are not yet publishable mitigations because utility damage is still too large and necessity is not cleanly isolated.
 ![Canary Probe AUC](reports/figures/canary_probe_auc.svg)
 
-### 4. The realistic-family `410M C0-C4` matrix is now real and informative
-- We completed a real `410M` seed-1 matrix over `C0 clean`, `C1 exact-1x`, `C2 exact-10x`, `C3 fuzzy-5x`, and `C4 redacted` on the mixed identity/account/event benchmark.
-- That matrix shows a strong cue effect: high-cue extraction is the only reliable behavioral channel at the current pilot scale, while low-cue exact extraction remains zero under the cheap `budget1` sweep.
-- It also shows the expected training-strength trend in validation perplexity: `C0` was weakest, `C2/C3/C4` were much more adapted to the synthetic corpus.
+### 4. The completed minimal `410M C0-C4` study is now real and informative
+- We completed the `full_paper_minimal_cluster` study end to end (`41/41` units): `C0/C1/C4` at seed `1`, `C2/C3` at seeds `1-3`, plus mechanistic, provenance, and removal follow-up on `C2/C3` seed `1`.
+- The finished behavioral matrix shows a strong cue effect under the real `budget5` audit: `C1/C2/C3` all show substantial high-cue member-sensitive extraction, while low-cue and no-cue exact extraction remain effectively zero for realistic identity/account/event records.
+- The controls behave cleanly. `C0_clean` is near-zero outside tiny high-cue noise, and `C4_redacted` is almost completely flat even under high cue, which supports the interpretation that the large `C1/C2/C3` high-cue rates are exposure-dependent rather than scoring artifacts.
 ![Paperlite Cue Extraction](reports/figures/paperlite_cue_extraction.svg)
 
 ### 5. Realistic families show latent low-cue memorization before overt extraction
@@ -46,12 +46,18 @@ The project is novel in three ways. First, it explicitly separates high-cue comp
 ![Paperlite Low-Cue Logprob](reports/figures/paperlite_lowcue_logprob.svg)
 ![Deep Event Audits](reports/figures/event_deep_logprob.svg)
 
+### 6. The completed minimal study strengthens the cue-control conclusion more than the leakage claim
+- In the finished minimal run, realistic-family low-cue matches are extremely rare rather than robust. `C2_exact_10x` seed `1` shows `2/9065` low-cue member matches versus `1/9105` nonmember matches, and `C3_fuzzy_5x` seed `1` shows `1/9065` member matches versus `0/9105` nonmember matches. All low-cue family-level `record_exact` rates remain `0.0`.
+- This means the minimal study supports a strong cue-control result: repetition and fuzzy duplication clearly boost high-cue extraction, but strict low-cue realistic-family extraction still largely collapses at this scale.
+- The mechanistic, provenance, and removal stages all completed successfully for `C2` and `C3`, which is important as a systems result, but their quantitative outputs are driven by only `1-2` successful low-cue targets and should therefore be treated as exploratory rather than definitive.
+- Provenance is numerically perfect on those tiny sets (`C2`: `2/2` targets, `C3`: `1/1` target), and removal nudges mean target logprob downward, but this is not yet the kind of large-sample realistic-family evidence needed for a strong journal claim.
+
 ## Scientific Interpretation
-- `RQ1 cue validity`: answered in the pilot sense. Cue filtering changes the picture dramatically. High-cue generation can look extractive while low-cue exact extraction largely disappears on realistic families at this local scale.
-- `RQ2 mechanistic separation`: partially answered. We have clear mechanistic separation on canaries, but not yet on realistic-family `C2/C3` because those runs did not yield enough successful low-cue extractions.
+- `RQ1 cue validity`: answered more strongly now. In the completed minimal study, cue filtering changes the picture dramatically: high-cue generation can look extractive while low-cue realistic-family exact extraction largely disappears.
+- `RQ2 mechanistic separation`: partially answered. We have clear mechanistic separation on canaries, and a completed `C2/C3` mechanistic pipeline in the minimal study, but the realistic-family positive sets are too small for strong interpretation.
 - `RQ3 causal mechanism`: partially answered. Patching and probe evidence show that internal states matter, but the current targeted mitigation is not yet clean enough to make a strong efficiency claim.
-- `RQ4 training provenance`: answered for exact canaries, not yet for fuzzy realistic families.
-- `RQ5 targeted mitigation`: partially answered through canary removal validation, but not yet through a low-utility targeted intervention that beats random inside `C2/C3` realistic-family runs.
+- `RQ4 training provenance`: answered for exact canaries and demonstrated end to end on the minimal realistic-family `C2/C3` runs, but only on `2` and `1` low-cue targets respectively, so the realistic-family evidence is still too thin.
+- `RQ5 targeted mitigation`: partially answered through canary removal validation and minimally through realistic-family removal reruns, but not yet through a low-utility targeted intervention that clearly beats random in a realistic-family setting with nontrivial extraction.
 
 ## Storage and Scale Engineering Findings
 - Streaming generation to JSONL removed the largest in-memory bottleneck during long audits.
@@ -59,14 +65,19 @@ The project is novel in three ways. First, it explicitly separates high-cue comp
 - Provenance candidate pools were corrected to include real distractors and trimmed to a lean exact-canary validation subset, which made attribution both faster and more trustworthy.
 
 ## What Is Still Missing For The Full Paper Claim
-- Multi-seed `C0-C4` runs at `410M`.
-- A realistic-family condition that crosses from low-cue latent signal into actual low-cue extraction.
-- Mechanistic `C2/C3` analysis on successful realistic-family low-cue extractions.
-- Fuzzy-cluster provenance and removal validation on `C3` outside the canary setting.
+- Strong-config multi-seed `C0-C4` runs at `410M`, especially `3` seeds for `C0/C1/C4` in addition to the completed `3`-seed `C2/C3` minimal run.
+- A realistic-family condition that crosses from low-cue latent signal into nontrivial low-cue extraction above nonmember controls.
+- Mechanistic `C2/C3` analysis on a realistic-family run with enough successful low-cue targets to avoid degenerate `1.0` AUCs and tiny-target provenance summaries.
+- Fuzzy-cluster provenance and removal validation on `C3` with more than a single positive target.
 - A targeted privacy intervention with substantially smaller utility cost.
 - The paperlite validation reports still flag a small residual low-cue overlap caveat (`12` prompts crossing a heuristic sensitive-substring threshold), so the prompt set is good enough for pilots but not yet perfectly clean.
 
 ## Key Artifact Index
+- Minimal study summary: `outputs/full_paper_minimal_cluster/reports/study_summary.md`
+- Minimal behavioral reports: `outputs/full_paper_minimal_cluster/reports/behavioral/`
+- Minimal mechanistic artifacts: `outputs/full_paper_minimal_cluster/outputs/mech/`
+- Minimal provenance artifacts: `outputs/full_paper_minimal_cluster/outputs/provenance/`
+- Minimal removal validation: `outputs/full_paper_minimal_cluster/outputs/removal/`
 - Canary scale summary: `reports/canary_stress_scale_summary.md`
 - Canary removal validation: `reports/canary_stress_removal_validation.md`
 - 410M strong canary behavioral report: `reports/canary_stress_pythia_410m_seed1_strong_long_behavioral.md`
@@ -75,4 +86,4 @@ The project is novel in three ways. First, it explicitly separates high-cue comp
 - Mechanistic artifacts: `outputs/mech/canary_stress_pythia_160m/`
 
 ## Bottom Line
-We now have a real scientific pilot: strong canary extraction at 160M and 410M, provenance that beats random on exact canaries, removal validation that is causally meaningful, mechanistic evidence that localizes low-cue canary extraction, and a real `410M C0-C4` realistic-family matrix that shows cue-driven behavior plus low-cue latent memorization. What we do not yet have is a full paper-grade realistic-family low-cue extraction result with matching mechanistic and provenance validation.
+We now have a completed minimal full-study run, not just a pilot slice. It shows that the end-to-end M-CRATE pipeline works at the planned minimal scale, that cue control changes the interpretation of extraction behavior sharply, that high-cue realistic-family extraction is exposure-sensitive, and that the mechanistic/provenance/removal loop can be executed successfully on realistic-family runs. What it does not yet show is a robust realistic-family low-cue extraction regime with enough positive targets to support strong mechanistic and provenance claims at journal strength.

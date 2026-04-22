@@ -185,12 +185,20 @@ def render_documents(
     rng = random.Random(seed)
     render_options = render_options or {}
     include_families = set(render_options.get("include_families", []))
+    exclude_families = set(render_options.get("exclude_families", []))
+    condition_norm = condition.lower()
+    # Realistic C0-C4 conditions should not silently inherit canaries unless
+    # the caller explicitly opts into them.
+    if "canary" not in condition_norm and "c5" not in condition_norm and "canary" not in include_families:
+        exclude_families.add("canary")
     duplicates, variant_mode, redact_sensitive_fields = _condition_settings(condition, render_options)
     docs: list[dict[str, Any]] = []
     for record in records:
         if record["membership"] != "member":
             continue
         if include_families and record["family"] not in include_families:
+            continue
+        if record["family"] in exclude_families:
             continue
         if duplicates == 0:
             continue

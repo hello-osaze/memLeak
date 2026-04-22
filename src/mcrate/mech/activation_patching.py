@@ -81,8 +81,8 @@ def activation_patching(*, model_path: str, scores_path: str, probe_candidates_p
                         "control_nonmember_delta_logprob": round(float(control_delta), 4),
                         "patched_probability": round(float(patched_probability), 4),
                         "unpatched_probability": round(float(unpatched_probability), 4),
-                        "patched_extracts": model.greedy_extracts(target, activations=patched),
-                        "unpatched_extracts": model.greedy_extracts(target, activations=target_acts),
+                        "patched_decoded_extracts": model.greedy_extracts(target, activations=patched),
+                        "unpatched_decoded_extracts": model.greedy_extracts(target, activations=target_acts),
                     }
                 )
         write_jsonl(out_path, results)
@@ -200,8 +200,12 @@ def activation_patching(*, model_path: str, scores_path: str, probe_candidates_p
                     "control_failed_member_delta_logprob": round(float(control_failed_delta), 4),
                     "patched_probability": round(float(math.exp(patched["target_logprob"])), 4),
                     "unpatched_probability": round(float(math.exp(base["target_logprob"])), 4),
-                    "patched_extracts": patched["first_target_logit"] > base["first_target_logit"],
-                    "unpatched_extracts": False,
+                    "patched_decoded_extracts": None,
+                    "unpatched_decoded_extracts": None,
+                    "patched_first_target_logit": round(float(patched["first_target_logit"]), 4),
+                    "unpatched_first_target_logit": round(float(base["first_target_logit"]), 4),
+                    "first_target_logit_delta": round(float(patched["first_target_logit"] - base["first_target_logit"]), 4),
+                    "first_target_logit_increased": patched["first_target_logit"] > base["first_target_logit"],
                 }
             )
     write_jsonl(out_path, results)

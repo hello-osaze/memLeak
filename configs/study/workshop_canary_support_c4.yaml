@@ -1,39 +1,38 @@
-study_name: full_paper_strong_cluster
-output_root: study_runs/full_paper_strong_cluster
+study_name: workshop_canary_support_c4
+output_root: study_runs/workshop_canary_support_c4
 
-# Override this on the cluster with --background /abs/path/to/background.txt
-background_path: data/raw/background_full.txt
+background_path: data/raw/backgrounds/c4_en
 
 records:
-  config: configs/data/records_default.yaml
-  output_name: full_paper_records.jsonl
+  config: configs/data/records_canary_workshop.yaml
+  output_name: workshop_canary_records.jsonl
 
 conditions:
   C0_clean:
-    corpus_config: configs/data/corpus_C0_clean.yaml
+    corpus_config: configs/data/corpus_workshop_C0_clean.yaml
     seeds: [1, 2, 3]
     render:
-      exclude_families: [canary]
+      include_families: [canary]
   C1_exact_1x:
-    corpus_config: configs/data/corpus_C1_exact_1x.yaml
+    corpus_config: configs/data/corpus_workshop_C1_exact_1x.yaml
     seeds: [1, 2, 3]
     render:
-      exclude_families: [canary]
+      include_families: [canary]
   C2_exact_10x:
-    corpus_config: configs/data/corpus_C2_exact_10x.yaml
+    corpus_config: configs/data/corpus_workshop_C2_exact_10x.yaml
     seeds: [1, 2, 3]
     render:
-      exclude_families: [canary]
+      include_families: [canary]
   C3_fuzzy_5x:
-    corpus_config: configs/data/corpus_C3_fuzzy_5x.yaml
+    corpus_config: configs/data/corpus_workshop_C3_fuzzy_5x.yaml
     seeds: [1, 2, 3]
     render:
-      exclude_families: [canary]
+      include_families: [canary]
   C4_redacted:
-    corpus_config: configs/data/corpus_C4_redacted.yaml
+    corpus_config: configs/data/corpus_workshop_C4_redacted.yaml
     seeds: [1, 2, 3]
     render:
-      exclude_families: [canary]
+      include_families: [canary]
 
 training:
   config: configs/train/pythia_410m.yaml
@@ -43,14 +42,15 @@ training:
 audit:
   split: test
   target_counts:
-    member: 1000
-    nonmember: 1000
-    canary: 0
+    member: 0
+    nonmember: 0
+    canary: 300
   sample_seed: 1
   generation_configs:
     - configs/generation/budget1.yaml
     - configs/generation/budget5.yaml
-  analysis_generation_config: configs/generation/budget5.yaml
+    - configs/generation/budget20.yaml
+  analysis_generation_config: configs/generation/budget20.yaml
   include_failed_prompts: false
 
 mechanistic:
@@ -61,21 +61,21 @@ mechanistic:
 
 provenance:
   enabled: true
-  config: configs/provenance/grad_similarity.yaml
+  config: configs/provenance/grad_similarity_publication.yaml
   focus_conditions: [C2_exact_10x, C3_fuzzy_5x]
   focus_seeds: all
   selection_unit_by_condition:
     C2_exact_10x: record
-    C3_fuzzy_5x: cluster
-  max_total_targets: 100
-  max_targets_per_record: 1
-  target_selection_metric: record_exact_then_logprob
+    C3_fuzzy_5x: record
+  max_total_targets: 250
+  max_targets_per_record: 2
+  target_selection_metric: max_target_logprob
   overrides:
     device: cuda
-    last_n_layers: 1
+    last_n_layers: 2
     include_final_norm: true
     include_lm_head: false
-    sequence_length: 256
+    sequence_length: 512
 
 removal:
   enabled: true
@@ -83,8 +83,8 @@ removal:
   focus_seeds: all
   selection_unit_by_condition:
     C2_exact_10x: record
-    C3_fuzzy_5x: cluster
-  audit_generation_config: configs/generation/budget5.yaml
+    C3_fuzzy_5x: record
+  audit_generation_config: configs/generation/budget20.yaml
   run_mech_lite: true
 
 storage:
@@ -103,5 +103,5 @@ cluster:
     partition: gpu
     gres: gpu:1
     cpus_per_task: 8
-    mem: 64G
-    time: "72:00:00"
+    mem: 80G
+    time: "96:00:00"
