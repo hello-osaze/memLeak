@@ -93,7 +93,9 @@ def activation_patching(*, model_path: str, scores_path: str, probe_candidates_p
         raise RuntimeError(f"Unsupported backend for activation patching: {backend}")
 
     if not g1 or not g2:
-        raise RuntimeError("Need successful and failed low-cue member examples for activation patching.")
+        write_jsonl(out_path, [])
+        LOGGER.warning("Skipping activation patching for %s because low-cue success/failure groups are insufficient.", model_path)
+        return []
 
     model, tokenizer, device = _load_model_and_tokenizer(model_path)
     record_map = load_record_map(model_path)

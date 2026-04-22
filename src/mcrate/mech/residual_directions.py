@@ -49,7 +49,9 @@ def residual_directions(*, model_path: str, scores_path: str, config_path: str, 
     fail = [row for row in rows if row["cue_band"] == "low" and row["membership"] == "member" and not row["success"]]
     eval_rows = [row for row in rows if row["cue_band"] == "low" and row["membership"] == "member"]
     if not success or not fail or not eval_rows:
-        raise RuntimeError("Need successful and failed low-cue member examples for residual direction analysis.")
+        write_jsonl(out_path, [])
+        LOGGER.warning("Skipping residual direction analysis for %s because low-cue groups are insufficient.", model_path)
+        return []
     alphas = list(config.get("alpha_grid", [0.0, 0.25, 0.5, 1.0, 2.0]))
 
     if backend == "toy_memorizer":

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import itertools
 import random
+import re
 from pathlib import Path
 from typing import Any
 
@@ -96,21 +97,36 @@ def _field_order(record: dict[str, Any]) -> list[str]:
     return ["anchor", "secret", "canary_id"]
 
 
-def _condition_settings(condition: str) -> tuple[int, bool]:
+def _condition_settings(condition: str, overrides: dict[str, Any] | None = None) -> tuple[int, str, bool]:
+    overrides = overrides or {}
+    if "repeat_count" in overrides:
+        repeat_count = int(overrides["repeat_count"])
+        variant_mode = str(overrides.get("variant_mode", "exact" if int(repeat_count) <= 1 else "fuzzy")).lower()
+        redact_sensitive_fields = bool(overrides.get("redact_sensitive_fields", False))
+        return repeat_count, variant_mode, redact_sensitive_fields
     norm = condition.lower()
+    exact_match = re.search(r"exact[_\-]?(\d+)x", norm)
+    if exact_match:
+        return int(exact_match.group(1)), "exact", False
+    fuzzy_match = re.search(r"fuzzy[_\-]?(\d+)x", norm)
+    if fuzzy_match:
+        return int(fuzzy_match.group(1)), "fuzzy", "redacted" in norm
+    redacted_match = re.search(r"redacted[_\-]?(\d+)x", norm)
+    if redacted_match:
+        return int(redacted_match.group(1)), "fuzzy", True
     if "c0" in norm or "clean" in norm:
-        return 0, False
+        return 0, "clean", False
     if "c1" in norm or "exact_1" in norm or "exact-1x" in norm:
-        return 1, False
+        return 1, "exact", False
     if "c2" in norm or "exact_10" in norm or "10x" in norm:
-        return 10, False
+        return 10, "exact", False
     if "c3" in norm or "fuzzy" in norm:
-        return 5, False
+        return 5, "fuzzy", False
     if "c4" in norm or "redacted" in norm:
-        return 5, True
+        return 5, "fuzzy", True
     if "c5" in norm or "20x" in norm:
-        return 20, False
-    return 1, False
+        return 20, "exact", False
+    return 1, "exact", False
 
 
 def _mask_value(field_name: str, value: str) -> str:
@@ -157,21 +173,32 @@ def _render_record_text(
     return text, included_sensitive_fields
 
 
-def render_documents(records: list[dict[str, Any]], condition: str, records_path: str, *, seed: int = 1) -> list[dict[str, Any]]:
+def render_documents(
+    records: list[dict[str, Any]],
+    condition: str,
+    records_path: str,
+    *,
+    seed: int = 1,
+    render_options: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
     set_global_seed(seed)
     rng = random.Random(seed)
-    duplicates, redact_sensitive_fields = _condition_settings(condition)
+    render_options = render_options or {}
+    include_families = set(render_options.get("include_families", []))
+    duplicates, variant_mode, redact_sensitive_fields = _condition_settings(condition, render_options)
     docs: list[dict[str, Any]] = []
     for record in records:
         if record["membership"] != "member":
             continue
+        if include_families and record["family"] not in include_families:
+            continue
         if duplicates == 0:
             continue
-        if "exact" in condition.lower() and "fuzzy" not in condition.lower():
+        if variant_mode == "exact":
             repeat_count = duplicates
             variants = ["exact_duplicate"] * repeat_count
         else:
-            variants = pick_variant_types(duplicates if "fuzzy" in condition.lower() or redact_sensitive_fields else 1)
+            variants = pick_variant_types(duplicates if variant_mode == "fuzzy" or redact_sensitive_fields else 1)
             repeat_count = duplicates if not variants else len(variants)
         templates = _catalog_for_family(record["family"])
         for variant_index in range(repeat_count):

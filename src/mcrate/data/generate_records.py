@@ -64,7 +64,7 @@ PLANS = ["basic", "plus", "pro", "enterprise"]
 REGIONS = ["amer", "emea", "apac"]
 ORIGINS = ["Zurich", "Basel", "Geneva", "Munich", "Vienna", "Milan", "Prague"]
 DESTINATIONS = ["Oslo", "Paris", "Berlin", "Madrid", "Rome", "Lisbon", "Athens"]
-HOTELS = ["Aurora Plaza", "Summit House", "Harbor Suites", "Maple Court", "Cedar Point Hotel"]
+HOTELS = ["Aurora Plaza", "Summit House", "Harbor Quarters", "Maple Court", "Cedar Point"]
 
 
 def _choice(rng: random.Random, values: list[str]) -> str:
@@ -173,7 +173,7 @@ def _account_record(idx: int, split: str, membership: str, cluster_id: str, seed
         "username": f"{first}_{last}_{idx % 1000}",
         "customer_id": _customer_id(idx),
         "support_ticket_id": _ticket_id(idx),
-        "recovery_email": f"{first}.{last}.recovery.{idx:04d}@{domain}",
+        "recovery_email": f"{first}.{last}.alt.{idx:04d}@{domain}",
         "last_four_digits": f"{(idx * 37) % 10000:04d}",
         "account_plan": _choice(rng, PLANS),
         "support_region": _choice(rng, REGIONS),

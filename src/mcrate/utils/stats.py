@@ -37,6 +37,42 @@ def bootstrap_ci(
     return (float(low), float(high))
 
 
+def wilson_ci(successes: int, total: int, *, z: float = 1.959963984540054) -> tuple[float, float]:
+    if total <= 0:
+        return (0.0, 0.0)
+    p_hat = successes / total
+    denominator = 1.0 + (z * z) / total
+    center = (p_hat + (z * z) / (2.0 * total)) / denominator
+    margin = (
+        z
+        * math.sqrt((p_hat * (1.0 - p_hat) / total) + ((z * z) / (4.0 * total * total)))
+        / denominator
+    )
+    return (max(0.0, center - margin), min(1.0, center + margin))
+
+
+def agresti_caffo_diff_ci(
+    successes_a: int,
+    total_a: int,
+    successes_b: int,
+    total_b: int,
+    *,
+    z: float = 1.959963984540054,
+) -> tuple[float, float]:
+    if total_a <= 0 or total_b <= 0:
+        return (0.0, 0.0)
+    adj_success_a = successes_a + 1
+    adj_total_a = total_a + 2
+    adj_success_b = successes_b + 1
+    adj_total_b = total_b + 2
+    rate_a = adj_success_a / adj_total_a
+    rate_b = adj_success_b / adj_total_b
+    diff = rate_a - rate_b
+    variance = (rate_a * (1.0 - rate_a) / adj_total_a) + (rate_b * (1.0 - rate_b) / adj_total_b)
+    margin = z * math.sqrt(max(variance, 0.0))
+    return (max(-1.0, diff - margin), min(1.0, diff + margin))
+
+
 def roc_auc_score(y_true: Sequence[int], y_score: Sequence[float]) -> float:
     positives = [(s, y) for s, y in zip(y_score, y_true) if y == 1]
     negatives = [(s, y) for s, y in zip(y_score, y_true) if y == 0]

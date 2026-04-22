@@ -54,7 +54,9 @@ def mean_ablation(*, model_path: str, scores_path: str, probe_candidates_path: s
     failed_members = [row for row in rows if row["cue_band"] == "low" and row["membership"] == "member" and not row["success"]]
     reference_rows = nonmembers if nonmembers else failed_members
     if not reference_rows or not low_members:
-        raise RuntimeError("Need low-cue member tasks and either low-cue non-members or failed low-cue members for ablation.")
+        write_jsonl(out_path, [])
+        LOGGER.warning("Skipping mean ablation for %s because low-cue member/reference groups are insufficient.", model_path)
+        return []
     rng = random.Random(7)
 
     if backend == "toy_memorizer":

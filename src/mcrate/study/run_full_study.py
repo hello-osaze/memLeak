@@ -388,6 +388,7 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                     "records_path": str(records_path),
                     "rendered_docs_path": str(rendered_docs_path),
                     "render_seed": int(payload.get("render_seed", 1)),
+                    "render_options": dict(payload.get("render", {})),
                 },
             }
         )
@@ -795,15 +796,17 @@ def _low_cue_member_metrics(scores: list[dict[str, Any]]) -> dict[str, float]:
     }
 
 
-def _provenance_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
+def _provenance_summary(rows: list[dict[str, Any]], selection_unit: str = "record") -> dict[str, Any]:
+    match_key = "is_true_cluster" if selection_unit == "cluster" else "is_true_record"
+    label = "cluster" if selection_unit == "cluster" else "record"
     if not rows:
-        return {"targets": 0, "top1_record_recall": 0.0, "top10_record_recall": 0.0, "mrr": 0.0}
+        return {"targets": 0, f"top1_{label}_recall": 0.0, f"top10_{label}_recall": 0.0, "mrr": 0.0}
     top1 = 0
     top10 = 0
     rr_values = []
     for row in rows:
         ranked = row.get("ranked_candidates", [])
-        true_ranks = [item["rank"] for item in ranked if item.get("is_true_record")]
+        true_ranks = [item["rank"] for item in ranked if item.get(match_key)]
         if true_ranks:
             top1 += 1 if min(true_ranks) == 1 else 0
             top10 += 1 if min(true_ranks) <= 10 else 0
@@ -812,8 +815,8 @@ def _provenance_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
             rr_values.append(0.0)
     return {
         "targets": len(rows),
-        "top1_record_recall": round(top1 / len(rows), 4),
-        "top10_record_recall": round(top10 / len(rows), 4),
+        f"top1_{label}_recall": round(top1 / len(rows), 4),
+        f"top10_{label}_recall": round(top10 / len(rows), 4),
         "mrr": round(sum(rr_values) / len(rr_values), 4),
     }
 
@@ -853,7 +856,13 @@ def _run_audit_prepare(unit: dict[str, Any]) -> dict[str, Any]:
 def _run_render(unit: dict[str, Any]) -> dict[str, Any]:
     payload = unit["payload"]
     records = read_jsonl(payload["records_path"])
-    docs = render_documents(records, payload["condition"], payload["records_path"], seed=int(payload["render_seed"]))
+    docs = render_documents(
+        records,
+        payload["condition"],
+        payload["records_path"],
+        seed=int(payload["render_seed"]),
+        render_options=payload.get("render_options", {}),
+    )
     write_jsonl(payload["rendered_docs_path"], docs)
     return {"doc_count": len(docs)}
 
@@ -1016,7 +1025,7 @@ def _run_provenance(unit: dict[str, Any]) -> dict[str, Any]:
         out_path=str(attribution_path),
         config_path=payload["generated_provenance_config_path"],
     )
-    summary = _provenance_summary(rows)
+    summary = _provenance_summary(rows, payload["selection_unit"])
     summary["selection_unit"] = payload["selection_unit"]
     write_json(provenance_dir / "summary.json", summary)
     return summary
@@ -1025,6 +1034,26 @@ def _run_provenance(unit: dict[str, Any]) -> dict[str, Any]:
 def _run_removal(unit: dict[str, Any]) -> dict[str, Any]:
     payload = unit["payload"]
     removal_dir = ensure_dir(payload["removal_dir"])
+    attribution_rows = read_jsonl(payload["attribution_path"])
+    if not attribution_rows:
+        final_summary = {
+            "condition": payload["condition"],
+            "seed": payload["seed"],
+            "selection_unit": payload["selection_unit"],
+            "removal_summary": {
+                "selection_unit": payload["selection_unit"],
+                "high_attr_units": [],
+                "random_units": [],
+                "high_attribution_removal": None,
+                "random_removal": None,
+                "skipped": True,
+                "reason": "no_attribution_targets",
+            },
+            "variants": [],
+            "removed_bytes": 0,
+        }
+        write_json(removal_dir / "removal_validation_summary.json", final_summary)
+        return final_summary
     if not Path(payload["train_config_path"]).exists():
         _write_overlay_config(
             payload["base_train_config_path"],

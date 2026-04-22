@@ -47,6 +47,46 @@ def _comparison_pairs() -> list[tuple[str, str, str]]:
     ]
 
 
+def _standardize_with_train_stats(train_X: np.ndarray, eval_X: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    mean = train_X.mean(axis=0, keepdims=True)
+    std = np.maximum(train_X.std(axis=0, keepdims=True), 1e-6)
+    return (train_X - mean) / std, (eval_X - mean) / std
+
+
+def _balanced_train_eval_split(
+    pos: np.ndarray,
+    neg: np.ndarray,
+    *,
+    eval_fraction: float,
+    seed: int,
+    min_examples_per_class: int,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray] | None:
+    size = min(len(pos), len(neg))
+    if size < max(2, min_examples_per_class):
+        return None
+    pos = pos[:size]
+    neg = neg[:size]
+    rng = np.random.default_rng(seed)
+    pos_order = rng.permutation(size)
+    neg_order = rng.permutation(size)
+    eval_per_class = max(1, int(round(size * eval_fraction)))
+    eval_per_class = min(eval_per_class, size - 1)
+    if size - eval_per_class < 1:
+        return None
+    pos_eval = pos[pos_order[:eval_per_class]]
+    pos_train = pos[pos_order[eval_per_class:]]
+    neg_eval = neg[neg_order[:eval_per_class]]
+    neg_train = neg[neg_order[eval_per_class:]]
+    train_X = np.concatenate([pos_train, neg_train], axis=0)
+    train_y = np.asarray([1] * len(pos_train) + [0] * len(neg_train), dtype=float)
+    eval_X = np.concatenate([pos_eval, neg_eval], axis=0)
+    eval_y = np.asarray([1] * len(pos_eval) + [0] * len(neg_eval), dtype=float)
+    train_X, eval_X = _standardize_with_train_stats(train_X, eval_X)
+    train_order = rng.permutation(len(train_X))
+    eval_order = rng.permutation(len(eval_X))
+    return train_X[train_order], train_y[train_order], eval_X[eval_order], eval_y[eval_order]
+
+
 def _available_layers(activations_path: Path, resid_site: str) -> list[int]:
     layers = set()
     for group_dir in activations_path.iterdir():
@@ -70,6 +110,9 @@ def train_probes(*, activations_root: str, config_path: str, out_dir: str) -> di
     layers = _available_layers(activations_path, resid_site)
     rows = []
     avg_auc_by_layer: dict[int, list[float]] = {layer: [] for layer in layers}
+    eval_fraction = float(config.get("probe", {}).get("eval_fraction", 0.2))
+    split_seed = int(config.get("probe", {}).get("split_seed", 1))
+    min_examples_per_class = int(config.get("probe", {}).get("min_examples_per_class", 2))
 
     for positive_group, negative_group, label in _comparison_pairs():
         pos_dir = activations_path / positive_group
@@ -88,26 +131,52 @@ def train_probes(*, activations_root: str, config_path: str, out_dir: str) -> di
                 continue
             pos = pos[:size]
             neg = neg[:size]
-            X = np.concatenate([pos, neg], axis=0)
-            y = np.asarray([1] * len(pos) + [0] * len(neg), dtype=float)
-            order = np.random.default_rng(1 + layer).permutation(len(X))
-            X = X[order]
-            y = y[order]
-            X = (X - X.mean(axis=0, keepdims=True)) / np.maximum(X.std(axis=0, keepdims=True), 1e-6)
-            split = max(1, int(0.8 * len(X)))
-            weights, bias = _fit_logistic(X[:split], y[:split])
-            eval_X = X[split:] if len(set(y[split:].astype(int).tolist())) == 2 else X
-            eval_y = y[split:] if len(set(y[split:].astype(int).tolist())) == 2 else y
+            split = _balanced_train_eval_split(
+                pos,
+                neg,
+                eval_fraction=eval_fraction,
+                seed=split_seed + layer,
+                min_examples_per_class=min_examples_per_class,
+            )
+            if split is None:
+                continue
+            train_X, train_y, eval_X, eval_y = split
+            weights, bias = _fit_logistic(train_X, train_y)
             scores = eval_X @ weights + bias
             auc = roc_auc_score(y_true=eval_y.astype(int).tolist(), y_score=scores.tolist())
             avg_auc_by_layer[layer].append(auc)
-            rows.append({"comparison": label, "layer": layer, "auc": round(float(auc), 4), "site": resid_site})
+            rows.append(
+                {
+                    "comparison": label,
+                    "layer": layer,
+                    "auc": round(float(auc), 4),
+                    "site": resid_site,
+                    "train_examples": int(len(train_y)),
+                    "eval_examples": int(len(eval_y)),
+                    "positive_examples": int(size),
+                    "negative_examples": int(size),
+                    "status": "ok",
+                }
+            )
 
     out_path = Path(out_dir)
     out_path.mkdir(parents=True, exist_ok=True)
     csv_path = out_path / "probe_results.csv"
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["comparison", "layer", "auc", "site"])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "comparison",
+                "layer",
+                "auc",
+                "site",
+                "train_examples",
+                "eval_examples",
+                "positive_examples",
+                "negative_examples",
+                "status",
+            ],
+        )
         writer.writeheader()
         for row in rows:
             writer.writerow(row)

@@ -106,17 +106,22 @@ def validate_dataset(
     lines.append("## Duplicate Condition Checks")
     lines.append(f"- Non-exact duplicate collisions inside fuzzy/redacted docs: {len(duplicate_issues)}")
 
-    leakage_issues = []
+    leakage_issues: dict[str, list[str]] = {"low": [], "no_cue": []}
     for row in prompts:
-        if row.get("cue_band_requested") != "low":
+        requested_band = row.get("cue_band_requested")
+        if requested_band not in leakage_issues:
             continue
         target_values = list((row.get("target_fields") or {}).values())
         sensitive_overlap = max_common_sensitive_substring(row["prompt"], [str(v) for v in target_values])
         if sensitive_overlap >= 6:
-            leakage_issues.append(row["task_id"])
+            leakage_issues[requested_band].append(row["task_id"])
     lines.append("")
     lines.append("## Cue Prompt Leakage")
-    lines.append(f"- Low-cue prompts with sensitive substring overlap >= 6: {len(leakage_issues)}")
+    lines.append(f"- Low-cue prompts with sensitive substring overlap >= 6: {len(leakage_issues['low'])}")
+    lines.append(f"- No-cue prompts with sensitive substring overlap >= 6: {len(leakage_issues['no_cue'])}")
+    if prompts and "passes_cue_filter" in prompts[0]:
+        band_pass_counts = Counter((row.get("cue_band_requested"), row.get("passes_cue_filter", True)) for row in prompts)
+        lines.append(f"- Cue-filter pass counts: {dict(band_pass_counts)}")
 
     lines.append("")
     lines.append("## Summary")

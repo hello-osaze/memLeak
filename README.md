@@ -81,6 +81,7 @@ The recommended configs are:
 
 - `configs/study/full_paper_minimal_cluster.yaml`
 - `configs/study/full_paper_strong_cluster.yaml`
+- `configs/study/paper_publication_cluster.yaml`
 
 They map directly onto the `.md` run plans:
 
@@ -88,6 +89,9 @@ They map directly onto the `.md` run plans:
   `budget5` behavioral audit, focused `C2/C3` mechanistic/provenance/removal
 - strong: `3` seeds for all conditions, `budget1` and `budget5`, all `C2/C3`
   mechanistic/provenance/removal runs
+- publication: `3` seeds for `C0-C4`, plus an event-focused `C3_fuzzy_10x`
+  escalation condition, colder longer decode budgets, larger provenance pools,
+  and robust no-data handling for downstream mechanistic/provenance/removal stages
 
 The repo now includes a bundled synthetic main background corpus at
 `data/raw/background_full.txt`, so the early-paper study can run without any
@@ -122,6 +126,12 @@ python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml 
 python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml emit-slurm-array --status ready
 ```
 
+For the current publication-oriented cluster run, the main entry point is:
+
+```bash
+python run_full_study.py --config configs/study/paper_publication_cluster.yaml run-all
+```
+
 The runner is designed to be storage-conscious by default:
 
 - records and audit prompts are shared across the full study
@@ -145,6 +155,23 @@ Large runtime artifacts such as trained weights, activation caches, and long
 generation dumps are intentionally not meant to be versioned in git. The repo
 tracks the code, configs, lightweight benchmark assets, and written findings;
 cluster outputs should live in external storage or fresh local runs.
+
+## Tests
+
+A lightweight regression suite now covers the main publication-facing fixes:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests
+```
+
+The tests cover:
+
+- corrected generation scoring precision/F1
+- non-degenerate uncertainty intervals in aggregate reports
+- low/no-cue prompt leakage reporting
+- leak-free probe train/eval splits
+- render overrides for focused publication conditions
+- cluster-aware provenance summaries
 
 ## Notes
 

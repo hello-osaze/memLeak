@@ -6,7 +6,7 @@ from typing import Any
 
 from mcrate.utils.io import read_jsonl, write_json, write_text
 from mcrate.utils.logging import get_logger
-from mcrate.utils.stats import bootstrap_ci, safe_mean
+from mcrate.utils.stats import agresti_caffo_diff_ci, safe_mean, wilson_ci
 
 
 LOGGER = get_logger(__name__)
@@ -29,7 +29,11 @@ def _collapse_to_task(scores: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "cue_band": sample["cue_band"],
                 "any_sensitive_match": any(row["any_sensitive_match"] for row in rows),
                 "record_exact": any(row["record_exact"] for row in rows),
-                "field_f1": safe_mean([row["field_f1"] for row in rows]),
+                "field_f1": max((float(row["field_f1"]) for row in rows), default=0.0),
+                "max_target_logprob": max(
+                    (float(row["target_logprob"]) for row in rows if row.get("target_logprob") is not None),
+                    default=None,
+                ),
             }
         )
     return collapsed
@@ -50,15 +54,24 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
         by_condition_family[(row["condition"], row["family"], row["membership"])].append(row)
 
     cue_table = []
+    logprob_table = []
     keys = sorted({(row["condition"], row["cue_band"]) for row in task_rows})
     for condition, cue_band in keys:
         member = by_condition_cue.get((condition, cue_band, "member"), [])
         nonmember = by_condition_cue.get((condition, cue_band, "nonmember"), [])
-        member_rate = _rate(member, "any_sensitive_match")
-        nonmember_rate = _rate(nonmember, "any_sensitive_match")
+        member_successes = sum(1 for row in member if row["any_sensitive_match"])
+        nonmember_successes = sum(1 for row in nonmember if row["any_sensitive_match"])
+        member_rate = safe_mean([1.0 if row["any_sensitive_match"] else 0.0 for row in member])
+        nonmember_rate = safe_mean([1.0 if row["any_sensitive_match"] else 0.0 for row in nonmember])
         lift = member_rate - nonmember_rate
-        combined = [{"value": 1 if row["any_sensitive_match"] else 0} for row in member]
-        ci_low, ci_high = bootstrap_ci(combined, lambda sample: sum(x["value"] for x in sample) / max(1, len(sample))) if combined else (0.0, 0.0)
+        member_ci_low, member_ci_high = wilson_ci(member_successes, len(member))
+        nonmember_ci_low, nonmember_ci_high = wilson_ci(nonmember_successes, len(nonmember))
+        lift_ci_low, lift_ci_high = agresti_caffo_diff_ci(
+            member_successes,
+            len(member),
+            nonmember_successes,
+            len(nonmember),
+        )
         cue_table.append(
             {
                 "condition": condition,
@@ -66,7 +79,24 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
                 "member_extraction": round(member_rate, 4),
                 "nonmember_extraction": round(nonmember_rate, 4),
                 "lift": round(lift, 4),
-                "member_ci95": [round(ci_low, 4), round(ci_high, 4)],
+                "member_successes": member_successes,
+                "member_tasks": len(member),
+                "nonmember_successes": nonmember_successes,
+                "nonmember_tasks": len(nonmember),
+                "member_ci95": [round(member_ci_low, 4), round(member_ci_high, 4)],
+                "nonmember_ci95": [round(nonmember_ci_low, 4), round(nonmember_ci_high, 4)],
+                "lift_ci95": [round(lift_ci_low, 4), round(lift_ci_high, 4)],
+            }
+        )
+        member_logprobs = [float(row["max_target_logprob"]) for row in member if row.get("max_target_logprob") is not None]
+        nonmember_logprobs = [float(row["max_target_logprob"]) for row in nonmember if row.get("max_target_logprob") is not None]
+        logprob_table.append(
+            {
+                "condition": condition,
+                "cue_band": cue_band,
+                "member_mean_max_target_logprob": round(safe_mean(member_logprobs), 4),
+                "nonmember_mean_max_target_logprob": round(safe_mean(nonmember_logprobs), 4),
+                "delta": round(safe_mean(member_logprobs) - safe_mean(nonmember_logprobs), 4),
             }
         )
 
@@ -89,19 +119,29 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
             }
         )
 
-    return {"cue_table": cue_table, "family_table": family_table, "task_count": len(task_rows)}
+    return {"cue_table": cue_table, "family_table": family_table, "logprob_table": logprob_table, "task_count": len(task_rows)}
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
     lines = ["# Behavioral Results", ""]
     lines.append("## Extraction By Cue Band")
-    lines.append("| Condition | Cue band | Member extraction | Non-member extraction | Lift | 95% CI |")
-    lines.append("|---|---|---:|---:|---:|---:|")
+    lines.append("| Condition | Cue band | Member extraction | Non-member extraction | Lift | Member 95% CI | Lift 95% CI |")
+    lines.append("|---|---|---:|---:|---:|---:|---:|")
     for row in summary["cue_table"]:
         lines.append(
             f"| {row['condition']} | {row['cue_band']} | {row['member_extraction']:.4f} | "
             f"{row['nonmember_extraction']:.4f} | {row['lift']:.4f} | "
-            f"[{row['member_ci95'][0]:.4f}, {row['member_ci95'][1]:.4f}] |"
+            f"[{row['member_ci95'][0]:.4f}, {row['member_ci95'][1]:.4f}] | "
+            f"[{row['lift_ci95'][0]:.4f}, {row['lift_ci95'][1]:.4f}] |"
+        )
+    lines.append("")
+    lines.append("## Teacher-Forced Target Logprob By Cue Band")
+    lines.append("| Condition | Cue band | Member mean max target logprob | Non-member mean max target logprob | Delta |")
+    lines.append("|---|---|---:|---:|---:|")
+    for row in summary.get("logprob_table", []):
+        lines.append(
+            f"| {row['condition']} | {row['cue_band']} | {row['member_mean_max_target_logprob']:.4f} | "
+            f"{row['nonmember_mean_max_target_logprob']:.4f} | {row['delta']:.4f} |"
         )
     lines.append("")
     lines.append("## Extraction By Family")

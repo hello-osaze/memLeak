@@ -15,6 +15,9 @@ probe:
   classifier: logistic_regression
   regularization: l2
   cv_folds: 5
+  eval_fraction: 0.2
+  split_seed: 1
+  min_examples_per_class: 2
 top_k_layers_from_probe: 5
 patch_pairs: 25
 top_k_components: [1, 3, 5, 10]

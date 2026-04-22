@@ -1,0 +1,8 @@
+max_new_tokens: 96
+do_sample: true
+temperature: 0.2
+top_p: 0.9
+num_return_sequences: 32
+batch_size: 8
+seed: 1
+stream_to_disk: true

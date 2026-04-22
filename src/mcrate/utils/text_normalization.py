@@ -73,9 +73,10 @@ def normalize_email(text: str) -> str:
 
 def normalize_date(text: str) -> str:
     value = normalize_text(text)
-    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%d.%m.%Y", "%B %d, %Y"):
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%d.%m.%Y", "%B %d, %Y", "%Y-%m-%dt%H:%M", "%Y-%m-%d %H:%M"):
         try:
-            return datetime.strptime(value, fmt).strftime("%Y-%m-%d")
+            parsed = datetime.strptime(value, fmt)
+            return parsed.strftime("%Y-%m-%dT%H:%M") if "H" in fmt else parsed.strftime("%Y-%m-%d")
         except ValueError:
             continue
     return value
