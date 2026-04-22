@@ -3,6 +3,7 @@ from __future__ import annotations
 import contextlib
 import json
 import math
+from array import array
 from collections import defaultdict
 from pathlib import Path
 from typing import Any, Iterable, Iterator
@@ -160,42 +161,66 @@ def _default_pad_token(tokenizer: Any) -> None:
 
 class TextBlockDataset:
     def __init__(self, text_file: str, tokenizer: Any, sequence_length: int) -> None:
-        torch = _torch_module()
-        text = Path(text_file).read_text(encoding="utf-8")
-        token_ids = tokenizer(text, add_special_tokens=False)["input_ids"]
-        eos_id = tokenizer.eos_token_id or tokenizer.pad_token_id or 0
-        token_ids = list(token_ids) + [eos_id]
-        self.examples: list[dict[str, Any]] = []
-        for start in range(0, len(token_ids), sequence_length):
-            chunk = token_ids[start : start + sequence_length]
-            if len(chunk) < 2:
+        self.sequence_length = int(sequence_length)
+        self.pad_token_id = int(tokenizer.pad_token_id or tokenizer.eos_token_id or 0)
+        self.eos_id = int(tokenizer.eos_token_id or tokenizer.pad_token_id or 0)
+        token_buffer: array[int] = array("I")
+        for text_chunk in self._iter_text_chunks(text_file):
+            encoded = tokenizer(text_chunk, add_special_tokens=False)["input_ids"]
+            if encoded and isinstance(encoded[0], list):
+                for row in encoded:
+                    token_buffer.extend(int(token_id) for token_id in row)
+                    token_buffer.append(self.eos_id)
                 continue
-            pad_len = max(0, sequence_length - len(chunk))
-            input_ids = chunk + [tokenizer.pad_token_id] * pad_len
-            attention_mask = [1] * len(chunk) + [0] * pad_len
-            labels = chunk + [-100] * pad_len
-            self.examples.append(
-                {
-                    "input_ids": torch.tensor(input_ids, dtype=torch.long),
-                    "attention_mask": torch.tensor(attention_mask, dtype=torch.long),
-                    "labels": torch.tensor(labels, dtype=torch.long),
-                }
-            )
-        if not self.examples:
-            input_ids = [eos_id, eos_id]
-            self.examples.append(
-                {
-                    "input_ids": torch.tensor(input_ids, dtype=torch.long),
-                    "attention_mask": torch.tensor([1, 1], dtype=torch.long),
-                    "labels": torch.tensor(input_ids, dtype=torch.long),
-                }
-            )
+            if encoded:
+                token_buffer.extend(int(token_id) for token_id in encoded)
+                token_buffer.append(self.eos_id)
+
+        if len(token_buffer) < 2:
+            token_buffer.extend([self.eos_id, self.eos_id])
+
+        self.token_ids = np.asarray(token_buffer, dtype=np.int32)
+        self.num_examples = max(1, math.ceil((len(self.token_ids) - 1) / self.sequence_length))
+
+    @staticmethod
+    def _iter_text_chunks(text_file: str, *, target_chars: int = 1_000_000) -> Iterator[str]:
+        buffer: list[str] = []
+        char_count = 0
+        with Path(text_file).open("r", encoding="utf-8") as handle:
+            for line in handle:
+                buffer.append(line)
+                char_count += len(line)
+                if char_count >= target_chars:
+                    yield "".join(buffer)
+                    buffer = []
+                    char_count = 0
+        if buffer:
+            yield "".join(buffer)
 
     def __len__(self) -> int:
-        return len(self.examples)
+        return self.num_examples
 
     def __getitem__(self, index: int) -> dict[str, Any]:
-        return self.examples[index]
+        torch = _torch_module()
+        start = index * self.sequence_length
+        chunk = self.token_ids[start : start + self.sequence_length]
+        if len(chunk) < 2:
+            chunk = np.asarray([self.eos_id, self.eos_id], dtype=np.int32)
+
+        input_ids = torch.full((self.sequence_length,), self.pad_token_id, dtype=torch.long)
+        attention_mask = torch.zeros((self.sequence_length,), dtype=torch.long)
+        labels = torch.full((self.sequence_length,), -100, dtype=torch.long)
+
+        chunk_tensor = torch.tensor(chunk, dtype=torch.long)
+        valid_length = min(len(chunk_tensor), self.sequence_length)
+        input_ids[:valid_length] = chunk_tensor[:valid_length]
+        attention_mask[:valid_length] = 1
+        labels[:valid_length] = chunk_tensor[:valid_length]
+        return {
+            "input_ids": input_ids,
+            "attention_mask": attention_mask,
+            "labels": labels,
+        }
 
 
 def _stack_batch(batch: list[dict[str, Any]]) -> dict[str, Any]:
