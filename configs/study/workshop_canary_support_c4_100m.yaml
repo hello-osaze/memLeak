@@ -1,0 +1,107 @@
+study_name: workshop_canary_support_c4_100m
+output_root: study_runs/workshop_canary_support_c4_100m
+
+background_path: data/raw/backgrounds/c4_en_100m
+
+records:
+  config: configs/data/records_canary_workshop.yaml
+  output_name: workshop_canary_records.jsonl
+
+conditions:
+  C0_clean:
+    corpus_config: configs/data/corpus_workshop100_C0_clean.yaml
+    seeds: [1, 2, 3]
+    render:
+      include_families: [canary]
+  C1_exact_1x:
+    corpus_config: configs/data/corpus_workshop100_C1_exact_1x.yaml
+    seeds: [1, 2, 3]
+    render:
+      include_families: [canary]
+  C2_exact_10x:
+    corpus_config: configs/data/corpus_workshop100_C2_exact_10x.yaml
+    seeds: [1, 2, 3]
+    render:
+      include_families: [canary]
+  C3_fuzzy_5x:
+    corpus_config: configs/data/corpus_workshop100_C3_fuzzy_5x.yaml
+    seeds: [1, 2, 3]
+    render:
+      include_families: [canary]
+  C4_redacted:
+    corpus_config: configs/data/corpus_workshop100_C4_redacted.yaml
+    seeds: [1, 2, 3]
+    render:
+      include_families: [canary]
+
+training:
+  config: configs/train/pythia_410m.yaml
+  overrides:
+    device: cuda
+
+audit:
+  split: test
+  target_counts:
+    member: 0
+    nonmember: 0
+    canary: 300
+  sample_seed: 1
+  generation_configs:
+    - configs/generation/budget1.yaml
+    - configs/generation/budget5.yaml
+    - configs/generation/budget20.yaml
+  analysis_generation_config: configs/generation/budget20.yaml
+  include_failed_prompts: false
+
+mechanistic:
+  enabled: true
+  config: configs/mech/probe.yaml
+  focus_conditions: [C2_exact_10x, C3_fuzzy_5x]
+  focus_seeds: all
+
+provenance:
+  enabled: true
+  config: configs/provenance/grad_similarity_publication.yaml
+  focus_conditions: [C2_exact_10x, C3_fuzzy_5x]
+  focus_seeds: all
+  selection_unit_by_condition:
+    C2_exact_10x: record
+    C3_fuzzy_5x: record
+  max_total_targets: 250
+  max_targets_per_record: 2
+  target_selection_metric: max_target_logprob
+  overrides:
+    device: cuda
+    last_n_layers: 2
+    include_final_norm: true
+    include_lm_head: false
+    sequence_length: 512
+
+removal:
+  enabled: true
+  focus_conditions: [C2_exact_10x, C3_fuzzy_5x]
+  focus_seeds: all
+  selection_unit_by_condition:
+    C2_exact_10x: record
+    C3_fuzzy_5x: record
+  audit_generation_config: configs/generation/budget20.yaml
+  run_mech_lite: true
+
+storage:
+  skip_existing: true
+  remove_generation_after_scoring: true
+  delete_intermediate_checkpoints: true
+  remove_activation_cache_after_mech: true
+  remove_removal_models_after_validation: true
+  shared_rendered_docs: true
+  shared_prompts: true
+
+cluster:
+  python_bin: python
+  scheduler: slurm
+  slurm:
+    partition: gpu
+    gres: gpu:1
+    cpus_per_task: 8
+    mem: 80G
+    time: "96:00:00"

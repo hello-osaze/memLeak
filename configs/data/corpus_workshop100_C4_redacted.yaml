@@ -1,0 +1,15 @@
+condition: C4_redacted
+background_tokens: 100000000
+synthetic_token_target: 4000000
+include_exact_duplicates: false
+include_fuzzy_variants: true
+fuzzy_variants_per_cluster: 5
+redact_sensitive_fields: true
+shuffle_seed: 1
+sequence_length: 1024
+background_sampling_mode: document_sample
+background_val_fraction: 0.1
+min_background_doc_tokens: 40
+background_dedup_exact: true
+background_dedup_near: true
+background_allow_reuse: false

@@ -79,8 +79,11 @@ python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml 
 The recommended configs are:
 
 - `configs/study/workshop_realistic_main_c4.yaml`
+- `configs/study/workshop_realistic_main_c4_100m.yaml`
 - `configs/study/workshop_realistic_main_dolma.yaml`
+- `configs/study/workshop_realistic_main_dolma_100m.yaml`
 - `configs/study/workshop_canary_support_c4.yaml`
+- `configs/study/workshop_canary_support_c4_100m.yaml`
 - `configs/study/workshop_realistic_main.yaml`
 - `configs/study/workshop_canary_support.yaml`
 - `configs/study/full_paper_minimal_cluster.yaml`
@@ -97,8 +100,11 @@ The workshop-oriented configs split the paper into two tracks:
 The named background variants encode the intended paper structure:
 
 - `workshop_realistic_main_c4`: main realistic result on `C4-en`
+- `workshop_realistic_main_c4_100m`: same main realistic result at `100M`
 - `workshop_canary_support_c4`: supporting canary result on `C4-en`
+- `workshop_canary_support_c4_100m`: same supporting canary result at `100M`
 - `workshop_realistic_main_dolma`: robustness appendix rerun on `Dolma`
+- `workshop_realistic_main_dolma_100m`: same robustness rerun at `100M`
 
 The legacy/full-study configs map directly onto the earlier `.md` run plans:
 
@@ -147,6 +153,24 @@ python scripts/build_hf_background_corpus.py \
   --train-tokens 50000000 \
   --val-tokens 5000000 \
   --out-dir data/raw/backgrounds/dolma
+```
+
+For the stronger `100M` paper run:
+
+```bash
+python scripts/build_hf_background_corpus.py \
+  --preset c4-en \
+  --train-tokens 100000000 \
+  --val-tokens 10000000 \
+  --out-dir data/raw/backgrounds/c4_en_100m
+```
+
+```bash
+python scripts/build_hf_background_corpus.py \
+  --preset dolma \
+  --train-tokens 100000000 \
+  --val-tokens 10000000 \
+  --out-dir data/raw/backgrounds/dolma_100m
 ```
 
 The bundled synthetic `data/raw/background_full.txt` is still available for
@@ -206,6 +230,26 @@ The robustness appendix rerun is:
 ```bash
 python run_full_study.py \
   --config configs/study/workshop_realistic_main_dolma.yaml \
+  run-all
+```
+
+If you want the stronger `100M` version of the same package:
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_realistic_main_c4_100m.yaml \
+  run-all
+```
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_canary_support_c4_100m.yaml \
+  run-all
+```
+
+```bash
+python run_full_study.py \
+  --config configs/study/workshop_realistic_main_dolma_100m.yaml \
   run-all
 ```
 

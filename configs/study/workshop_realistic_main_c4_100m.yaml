@@ -1,0 +1,89 @@
+study_name: workshop_realistic_main_c4_100m
+output_root: study_runs/workshop_realistic_main_c4_100m
+
+background_path: data/raw/backgrounds/c4_en_100m
+
+records:
+  config: configs/data/records_realistic_workshop.yaml
+  output_name: workshop_realistic_records.jsonl
+
+conditions:
+  C0_clean:
+    corpus_config: configs/data/corpus_workshop100_C0_clean.yaml
+    seeds: [1, 2, 3]
+  C1_exact_1x:
+    corpus_config: configs/data/corpus_workshop100_C1_exact_1x.yaml
+    seeds: [1, 2, 3]
+  C2_exact_10x:
+    corpus_config: configs/data/corpus_workshop100_C2_exact_10x.yaml
+    seeds: [1, 2, 3]
+  C3_fuzzy_5x:
+    corpus_config: configs/data/corpus_workshop100_C3_fuzzy_5x.yaml
+    seeds: [1, 2, 3]
+  C4_redacted:
+    corpus_config: configs/data/corpus_workshop100_C4_redacted.yaml
+    seeds: [1, 2, 3]
+
+training:
+  config: configs/train/pythia_410m.yaml
+  overrides:
+    device: cuda
+
+audit:
+  split: test
+  target_counts:
+    member: 1000
+    nonmember: 1000
+    canary: 0
+  sample_seed: 1
+  generation_configs:
+    - configs/generation/budget1.yaml
+    - configs/generation/budget5.yaml
+    - configs/generation/budget20.yaml
+  analysis_generation_config: configs/generation/budget20.yaml
+  include_failed_prompts: false
+
+mechanistic:
+  enabled: false
+  config: configs/mech/probe.yaml
+  focus_conditions: []
+  focus_seeds: []
+
+provenance:
+  enabled: false
+  config: configs/provenance/grad_similarity_publication.yaml
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  max_total_targets: 0
+  max_targets_per_record: 0
+  target_selection_metric: max_target_logprob
+  overrides:
+    device: cuda
+
+removal:
+  enabled: false
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  audit_generation_config: configs/generation/budget20.yaml
+  run_mech_lite: false
+
+storage:
+  skip_existing: true
+  remove_generation_after_scoring: true
+  delete_intermediate_checkpoints: true
+  remove_activation_cache_after_mech: true
+  remove_removal_models_after_validation: true
+  shared_rendered_docs: true
+  shared_prompts: true
+
+cluster:
+  python_bin: python
+  scheduler: slurm
+  slurm:
+    partition: gpu
+    gres: gpu:1
+    cpus_per_task: 8
+    mem: 80G
+    time: "96:00:00"
