@@ -1,5 +1,5 @@
 condition: C2_exact_10x
-background_tokens: 100000000
+background_tokens: 50000000
 synthetic_token_target: 4000000
 include_exact_duplicates: true
 include_fuzzy_variants: false
