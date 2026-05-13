@@ -6,7 +6,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
-from mcrate.data.build_corpus import materialize_corpus_texts
+from mcrate.data.build_corpus import _materialize_document_background, materialize_corpus_texts
 from mcrate.models.toy import build_toy_model
 from mcrate.train.finetune import finetune
 from mcrate.utils.hashing import sha256_file
@@ -50,13 +50,26 @@ def _write_corpus_variant(
     selected_docs: list[dict[str, Any]],
 ) -> dict[str, Any]:
     seed = int(manifest.get("seed", 1))
-    background_text = Path(manifest["background_path"]).read_text(encoding="utf-8")
-    texts = materialize_corpus_texts(
-        background_text=background_text,
-        selected_docs=selected_docs,
-        background_tokens_target=int(manifest.get("background_tokens_target", 0)),
-        seed=seed,
-    )
+    background_path = str(manifest["background_path"])
+    background_tokens_target = int(manifest.get("background_tokens_target", 0))
+    if Path(background_path).is_dir():
+        texts, manifest_bits = _materialize_document_background(
+            background_path=background_path,
+            selected_docs=selected_docs,
+            background_tokens_target=background_tokens_target,
+            seed=seed,
+            records_path=manifest.get("records_path"),
+            config=manifest,
+        )
+    else:
+        background_text = Path(background_path).read_text(encoding="utf-8")
+        texts = materialize_corpus_texts(
+            background_text=background_text,
+            selected_docs=selected_docs,
+            background_tokens_target=background_tokens_target,
+            seed=seed,
+        )
+        manifest_bits = {}
     selected_docs_path = subdir / "selected_docs.jsonl"
     train_file = subdir / "train.txt"
     validation_file = subdir / "validation.txt"
@@ -65,6 +78,7 @@ def _write_corpus_variant(
     write_text(validation_file, texts["validation_text"])
     return {
         **manifest,
+        **manifest_bits,
         "selected_docs_path": str(selected_docs_path.resolve()),
         "train_file": str(train_file.resolve()),
         "validation_file": str(validation_file.resolve()),

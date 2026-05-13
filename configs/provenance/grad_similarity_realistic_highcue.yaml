@@ -1,0 +1,16 @@
+seed: 1
+candidate_pool_size: 256
+negative_pool_size: 256
+last_n_layers: 2
+include_final_norm: true
+include_lm_head: false
+sequence_length: 512
+
+# Track A realistic extraction is cue-conditioned. The default provenance
+# selector is low-cue, which is appropriate for canaries but underpowered here.
+target_cue_bands: [high]
+target_memberships: [member]
+target_match_field: success
+target_selection_metric: max_target_logprob
+max_targets_per_record: 1
+max_total_targets: 40

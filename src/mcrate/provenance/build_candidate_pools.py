@@ -34,6 +34,9 @@ def build_candidate_pools(*, scores_path: str, rendered_docs_path: str, config_p
     max_targets_per_record = int(config.get("max_targets_per_record", 0))
     max_total_targets = int(config.get("max_total_targets", 0))
     target_selection_metric = str(config.get("target_selection_metric", "record_exact_then_logprob")).lower()
+    target_cue_bands = set(config.get("target_cue_bands", ["low"]))
+    target_memberships = set(config.get("target_memberships", ["member"]))
+    target_match_field = str(config.get("target_match_field", "success"))
     scores = _collapse(read_jsonl(scores_path))
     docs = read_jsonl(rendered_docs_path)
     rng = random.Random(int(config.get("seed", 1)))
@@ -44,7 +47,13 @@ def build_candidate_pools(*, scores_path: str, rendered_docs_path: str, config_p
         docs_by_record[doc["record_id"]].append(doc)
 
     rows = []
-    targets = [row for row in scores if row["cue_band"] == "low" and row["membership"] == "member" and row["success"]]
+    targets = [
+        row
+        for row in scores
+        if row["cue_band"] in target_cue_bands
+        and row["membership"] in target_memberships
+        and bool(row.get(target_match_field, False))
+    ]
     if max_targets_per_record > 0:
         grouped_targets = defaultdict(list)
         for row in targets:
