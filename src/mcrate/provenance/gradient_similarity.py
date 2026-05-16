@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import gc
 from collections import defaultdict
 from typing import Any
 
@@ -111,12 +112,7 @@ def gradient_similarity(
         raise RuntimeError("No provenance parameter subset was selected for the HF backend.")
 
     torch = _torch_module()
-    target_gradient_cache: dict[str, Any] = {}
-    doc_gradient_cache: dict[str, Any] = {}
-
     def target_gradient(task: dict[str, Any]) -> Any:
-        if task["task_id"] in target_gradient_cache:
-            return target_gradient_cache[task["task_id"]]
         record = record_map.get(task["record_id"])
         if not record:
             raise RuntimeError(f"Missing record for task {task['task_id']} / {task['record_id']}")
@@ -125,13 +121,9 @@ def gradient_similarity(
             raise RuntimeError(f"Missing target text for record {task['record_id']}")
         batch, _, _ = _teacher_forced_target_batch(tokenizer, task["prompt"], target_text, device)
         outputs = model(**batch)
-        gradient = gradient_vector_from_loss(model, outputs.loss, selected_parameters)
-        target_gradient_cache[task["task_id"]] = gradient
-        return gradient
+        return gradient_vector_from_loss(model, outputs.loss, selected_parameters)
 
     def doc_gradient(doc: dict[str, Any]) -> Any:
-        if doc["doc_id"] in doc_gradient_cache:
-            return doc_gradient_cache[doc["doc_id"]]
         encoded = tokenizer(
             doc["text"],
             return_tensors="pt",
@@ -145,9 +137,7 @@ def gradient_similarity(
             attention_mask=encoded["attention_mask"],
             labels=encoded["input_ids"],
         )
-        gradient = gradient_vector_from_loss(model, outputs.loss, selected_parameters)
-        doc_gradient_cache[doc["doc_id"]] = gradient
-        return gradient
+        return gradient_vector_from_loss(model, outputs.loss, selected_parameters)
 
     results = []
     for pool in pools:
@@ -175,6 +165,7 @@ def gradient_similarity(
                     "is_true_cluster": doc["cluster_id"] == task["cluster_id"],
                 }
             )
+            del candidate_grad
         ranked.sort(key=lambda row: row["score"], reverse=True)
         for rank, row in enumerate(ranked, start=1):
             row["rank"] = rank
@@ -191,6 +182,10 @@ def gradient_similarity(
                 "ranked_candidates": ranked[:20],
             }
         )
+        del target_grad
+        gc.collect()
+        if device.type == "cuda":
+            torch.cuda.empty_cache()
     write_jsonl(out_path, results)
     LOGGER.info("Wrote %s attribution rows to %s", len(results), out_path)
     return results
