@@ -206,8 +206,42 @@ def bm25_scores(query: str, docs: list[dict[str, Any]]) -> dict[str, float]:
     return scores
 
 
+def deidentify_prompt(prompt: str, record: dict[str, Any]) -> str:
+    """Remove record-specific strings so lexical retrieval cannot key on the target."""
+    cleaned = prompt
+    values = [record.get("public_handle", "")]
+    values.extend(str(value) for value in record.get("fields", {}).values())
+    for value in sorted({value for value in values if value}, key=len, reverse=True):
+        if len(value) >= 3:
+            cleaned = re.sub(re.escape(value), " ", cleaned, flags=re.IGNORECASE)
+    return " ".join(cleaned.split())
+
+
+def ranked_overlap_metrics(
+    *,
+    query: str,
+    candidate_docs: list[dict[str, Any]],
+    pool: dict[str, Any],
+    task: dict[str, Any],
+    match_key: str,
+) -> tuple[float, float, float]:
+    overlap_scores = bm25_scores(query, candidate_docs)
+    ranked_docs = sorted(candidate_docs, key=lambda doc: (overlap_scores[doc["doc_id"]], doc["doc_id"]), reverse=True)
+    ranked = []
+    for rank, doc in enumerate(ranked_docs, start=1):
+        ranked.append(
+            {
+                "rank": rank,
+                "is_true_record": doc["record_id"] == pool["target_record_id"],
+                "is_true_cluster": doc["cluster_id"] == task["cluster_id"],
+            }
+        )
+    return metric_from_ranked(ranked, match_key)
+
+
 def generate_provenance_outputs(run_root: Path, out_dir: Path) -> list[dict[str, Any]]:
     rows = []
+    records = {row["record_id"]: row for row in read_jsonl(run_root / "data" / "records" / "workshop_realistic_records.jsonl")}
     for condition, unit in PROVENANCE_UNITS.items():
         prov_dir = run_root / "outputs" / "provenance" / condition / "seed_1" / "budget5"
         pools_path = prov_dir / "candidate_pools.jsonl"
@@ -239,7 +273,8 @@ def generate_provenance_outputs(run_root: Path, out_dir: Path) -> list[dict[str,
 
         random_metrics = []
         same_template_metrics = []
-        bm25_metrics = []
+        bm25_full_metrics = []
+        bm25_deidentified_metrics = []
         for grad_row in gradient_rows:
             task_id = grad_row["target_task_id"]
             task = scores[task_id]
@@ -269,23 +304,31 @@ def generate_provenance_outputs(run_root: Path, out_dir: Path) -> list[dict[str,
                 )
             )
 
-            overlap_scores = bm25_scores(task["prompt"], candidate_docs)
-            ranked_docs = sorted(candidate_docs, key=lambda doc: (overlap_scores[doc["doc_id"]], doc["doc_id"]), reverse=True)
-            ranked = []
-            for rank, doc in enumerate(ranked_docs, start=1):
-                ranked.append(
-                    {
-                        "rank": rank,
-                        "is_true_record": doc["record_id"] == pool["target_record_id"],
-                        "is_true_cluster": doc["cluster_id"] == task["cluster_id"],
-                    }
+            bm25_full_metrics.append(
+                ranked_overlap_metrics(
+                    query=task["prompt"],
+                    candidate_docs=candidate_docs,
+                    pool=pool,
+                    task=task,
+                    match_key=match_key,
                 )
-            bm25_metrics.append(metric_from_ranked(ranked, match_key))
+            )
+            record = records.get(pool["target_record_id"], {"fields": {}, "public_handle": ""})
+            bm25_deidentified_metrics.append(
+                ranked_overlap_metrics(
+                    query=deidentify_prompt(task["prompt"], record),
+                    candidate_docs=candidate_docs,
+                    pool=pool,
+                    task=task,
+                    match_key=match_key,
+                )
+            )
 
         for method, method_rows in [
             ("random_same_family_expected", random_metrics),
             ("same_template_first_expected", same_template_metrics),
-            ("bm25_prompt_overlap", bm25_metrics),
+            ("bm25_full_prompt_overlap", bm25_full_metrics),
+            ("bm25_deidentified_prompt_overlap", bm25_deidentified_metrics),
         ]:
             rows.append(
                 summarize_metric_rows(
@@ -327,7 +370,8 @@ def provenance_tex(rows: list[dict[str, Any]]) -> str:
         "gradient_similarity": "Gradient similarity",
         "random_same_family_expected": "Random same-family",
         "same_template_first_expected": "Same-template first",
-        "bm25_prompt_overlap": "BM25 prompt overlap",
+        "bm25_full_prompt_overlap": "BM25 full prompt",
+        "bm25_deidentified_prompt_overlap": "BM25 de-identified prompt",
     }
     lines = [
         r"\begin{table}[!t]",
@@ -518,6 +562,7 @@ def prompt_template_map(run_root: Path) -> dict[str, dict[str, Any]]:
 def generate_best_of_template_outputs(run_root: Path, out_dir: Path) -> list[dict[str, Any]]:
     prompts = prompt_template_map(run_root)
     rows = []
+    missing_score_files = []
     for condition in CONDITIONS:
         if condition not in {"c0_clean", "c2_exact_10x", "c3_fuzzy_5x"}:
             continue
@@ -526,6 +571,7 @@ def generate_best_of_template_outputs(run_root: Path, out_dir: Path) -> list[dic
             for seed in [1, 2, 3]:
                 score_path = run_root / "outputs" / "scores" / condition / f"seed_{seed}" / f"budget{budget}_scores.jsonl"
                 if not score_path.exists():
+                    missing_score_files.append(str(score_path))
                     continue
                 collapsed = collapse_scores(read_jsonl(score_path))
                 for row in collapsed:
@@ -588,6 +634,7 @@ def generate_best_of_template_outputs(run_root: Path, out_dir: Path) -> list[dic
     ]
     write_csv(out_dir / "best_of_template_audit.csv", rows, fieldnames)
     write_text(out_dir / "best_of_template_audit.tex", best_of_template_tex(rows))
+    write_text(out_dir / "best_of_template_missing_inputs.txt", "\n".join(missing_score_files) + ("\n" if missing_score_files else ""))
     return rows
 
 
@@ -648,8 +695,15 @@ def main() -> None:
         "provenance_rows": len(provenance_rows),
         "matched_control_balance_rows": len(balance_rows),
         "best_of_template_rows": len(best_of_rows),
+        "best_of_template_missing_score_files": [
+            line
+            for line in (out_dir / "best_of_template_missing_inputs.txt").read_text(encoding="utf-8").splitlines()
+            if line
+        ],
         "notes": [
             "Provenance baseline rows are generated only when candidate_pools.jsonl and gradient_similarity.jsonl are present.",
+            "BM25 full-prompt overlap is an intentionally strong lexical baseline and may be trivial under high-cue prompts.",
+            "BM25 de-identified prompt overlap removes record-specific field values before lexical retrieval.",
             "Best-of-template uses existing high-cue prompts and does not run new generations.",
         ],
     }
