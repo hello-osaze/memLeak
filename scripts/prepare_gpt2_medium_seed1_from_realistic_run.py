@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 CONDITIONS = ["c0_clean", "c2_exact_10x", "c3_fuzzy_5x"]
+FALLBACK_VALIDATION_BYTES = 64 * 1024 * 1024
 
 
 def copy_file(src: Path, dst: Path, *, force: bool) -> None:
@@ -33,6 +34,32 @@ def symlink_dir(src: Path, dst: Path, *, force: bool) -> None:
             shutil.rmtree(dst)
     rel_src = os.path.relpath(src.resolve(), dst.parent.resolve())
     dst.symlink_to(rel_src, target_is_directory=True)
+
+
+def ensure_validation_file(corpus_dir: Path) -> None:
+    validation_path = corpus_dir / "validation.txt"
+    if validation_path.exists() and validation_path.stat().st_size > 0:
+        return
+
+    train_path = corpus_dir / "train.txt"
+    if not train_path.exists():
+        raise FileNotFoundError(train_path)
+
+    # Some restored backup bundles contain only train.txt. Validation is used
+    # only for monitoring metrics in this robustness run, so a bounded slice of
+    # the already-restored training corpus is enough to keep fine-tuning moving.
+    validation_path.parent.mkdir(parents=True, exist_ok=True)
+    remaining = FALLBACK_VALIDATION_BYTES
+    with train_path.open("rb") as src, validation_path.open("wb") as dst:
+        while remaining > 0:
+            chunk = src.read(min(1024 * 1024, remaining))
+            if not chunk:
+                break
+            dst.write(chunk)
+            remaining -= len(chunk)
+
+    if validation_path.stat().st_size == 0:
+        raise RuntimeError(f"Could not create fallback validation file from {train_path}")
 
 
 def prepare(source: Path, dest: Path, *, force: bool) -> None:
@@ -67,9 +94,11 @@ def prepare(source: Path, dest: Path, *, force: bool) -> None:
             dest / "data" / "corpora" / condition / "seed_1",
             force=force,
         )
+        ensure_validation_file(dest / "data" / "corpora" / condition / "seed_1")
 
     print(f"Prepared GPT-2 Medium seed-1 study root: {dest}")
     print("Reused records/prompts/rendered docs and symlinked C0/C2/C3 seed-1 corpora.")
+    print("Ensured validation.txt exists for each reused corpus.")
 
 
 def main() -> None:
