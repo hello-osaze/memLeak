@@ -1,0 +1,83 @@
+study_name: workshop_realistic_main_c4_100m_gpt2_medium_seed1
+output_root: study_runs/workshop_realistic_main_c4_100m_gpt2_medium_seed1
+
+background_path: data/raw/backgrounds/c4_en_100m
+
+records:
+  config: configs/data/records_realistic_workshop.yaml
+  output_name: workshop_realistic_records.jsonl
+
+conditions:
+  C0_clean:
+    corpus_config: configs/data/corpus_workshop100_C0_clean.yaml
+    seeds: [1]
+  C2_exact_10x:
+    corpus_config: configs/data/corpus_workshop100_C2_exact_10x.yaml
+    seeds: [1]
+  C3_fuzzy_5x:
+    corpus_config: configs/data/corpus_workshop100_C3_fuzzy_5x.yaml
+    seeds: [1]
+
+training:
+  config: configs/train/gpt2_medium.yaml
+  overrides:
+    device: cuda
+
+audit:
+  split: test
+  target_counts:
+    member: 1000
+    nonmember: 1000
+    canary: 0
+  sample_seed: 1
+  generation_configs:
+    - configs/generation/budget1.yaml
+    - configs/generation/budget5.yaml
+    - configs/generation/budget20.yaml
+  analysis_generation_config: configs/generation/budget20.yaml
+  include_failed_prompts: false
+
+mechanistic:
+  enabled: false
+  config: configs/mech/probe.yaml
+  focus_conditions: []
+  focus_seeds: []
+
+provenance:
+  enabled: false
+  config: configs/provenance/grad_similarity_publication.yaml
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  max_total_targets: 0
+  max_targets_per_record: 0
+  target_selection_metric: max_target_logprob
+  overrides:
+    device: cuda
+
+removal:
+  enabled: false
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  audit_generation_config: configs/generation/budget20.yaml
+  run_mech_lite: false
+
+storage:
+  skip_existing: true
+  remove_generation_after_scoring: true
+  delete_intermediate_checkpoints: true
+  remove_activation_cache_after_mech: true
+  remove_removal_models_after_validation: true
+  shared_rendered_docs: true
+  shared_prompts: true
+
+cluster:
+  python_bin: python
+  scheduler: slurm
+  slurm:
+    partition: gpu
+    gres: gpu:1
+    cpus_per_task: 8
+    mem: 80G
+    time: "72:00:00"
