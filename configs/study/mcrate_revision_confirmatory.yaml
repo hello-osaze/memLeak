@@ -9,19 +9,19 @@ records:
 
 conditions:
   C0_clean:
-    corpus_config: configs/data/corpus_workshop100_C0_clean.yaml
+    corpus_config: configs/data/corpus_revision100_C0_clean.yaml
     seeds: [1, 2, 3]
   C1_exact_1x:
-    corpus_config: configs/data/corpus_workshop100_C1_exact_1x.yaml
+    corpus_config: configs/data/corpus_revision100_C1_exact_1x.yaml
     seeds: [1, 2, 3]
   C2_exact_10x:
-    corpus_config: configs/data/corpus_workshop100_C2_exact_10x.yaml
+    corpus_config: configs/data/corpus_revision100_C2_exact_10x.yaml
     seeds: [1, 2, 3]
   C3_fuzzy_5x:
-    corpus_config: configs/data/corpus_workshop100_C3_fuzzy_5x.yaml
+    corpus_config: configs/data/corpus_revision100_C3_fuzzy_5x.yaml
     seeds: [1, 2, 3]
   C4_redacted:
-    corpus_config: configs/data/corpus_workshop100_C4_redacted.yaml
+    corpus_config: configs/data/corpus_revision100_C4_redacted.yaml
     seeds: [1, 2, 3]
 
 training:
