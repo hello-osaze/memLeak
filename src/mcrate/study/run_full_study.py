@@ -14,11 +14,21 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from mcrate.audit.adaptive_attack import ATTACK_TYPES, OBJECTIVES, build_adaptive_prompt_bank, build_attack_prompts
 from mcrate.audit.aggregate_results import aggregate, render_markdown
 from mcrate.audit.compute_cue_scores import compute_cue_scores
 from mcrate.audit.make_prompts import make_prompts
+from mcrate.audit.matching import MATCHING_VARIANTS, build_matched_pairs, nonmembers_for_split, select_members_for_audit
+from mcrate.audit.revision_artifacts import (
+    archive_raw_generations,
+    collect_audit_revision_rows,
+    write_generation_config_artifact,
+    write_revision_result_tables,
+    write_runtime_stub,
+)
 from mcrate.audit.run_generation import run_generation
 from mcrate.audit.score_generations import score_generations
+from mcrate.data.ablation_records import ABLATION_NONE, transform_records_for_ablation
 from mcrate.data.build_corpus import build_corpus
 from mcrate.data.generate_records import generate_records
 from mcrate.data.render_templates import render_documents
@@ -35,6 +45,7 @@ from mcrate.provenance.removal_experiment import removal_experiment
 from mcrate.train.finetune import finetune
 from mcrate.utils.io import dump_yaml, ensure_dir, load_yaml, read_json, read_jsonl, write_json, write_jsonl, write_text
 from mcrate.utils.logging import get_logger
+from mcrate.utils.text_normalization import char_ngrams, jaccard, normalize_text, tokenize
 
 
 LOGGER = get_logger(__name__)
@@ -106,6 +117,24 @@ class StudyLayout:
     def prompt_summary_path(self) -> Path:
         return self.root / "reports" / "prompt_summary.json"
 
+    def prompt_manifest_path(self) -> Path:
+        return self.root / "artifacts" / "prompt_manifest.jsonl"
+
+    def leakage_filter_manifest_path(self) -> Path:
+        return self.root / "artifacts" / "leakage_filter_manifest.jsonl"
+
+    def matched_pairs_path(self, variant: str) -> Path:
+        return self.root / "artifacts" / f"matched_pairs_{_slug(variant)}.jsonl"
+
+    def transformed_records_path(self, condition: str) -> Path:
+        return self.root / "data" / "records" / "transformed" / f"{_slug(condition)}__records.jsonl"
+
+    def ablation_manifest_path(self, condition: str) -> Path:
+        return self.root / "artifacts" / "ablations" / f"{_slug(condition)}__ablation_manifest.jsonl"
+
+    def fuzzy_manifest_path(self, condition: str) -> Path:
+        return self.root / "artifacts" / "fuzzy" / f"{_slug(condition)}__fuzzy_manifest.jsonl"
+
     def rendered_docs_path(self, condition: str) -> Path:
         return self.root / "data" / "processed" / f"{_slug(condition)}__rendered_docs.jsonl"
 
@@ -142,6 +171,70 @@ class StudyLayout:
     def behavioral_report_path(self, condition: str, seed: int, generation_name: str) -> Path:
         return self.root / "reports" / "behavioral" / _slug(condition) / f"seed_{seed}__{_slug(generation_name)}.md"
 
+    def adaptive_prompt_bank_path(self) -> Path:
+        return self.root / "artifacts" / "adaptive_prompt_bank.jsonl"
+
+    def adaptive_prompts_path(self, condition: str, seed: int, attack_type: str, objective: str, generation_budget: int) -> Path:
+        return (
+            self.root
+            / "data"
+            / "prompts"
+            / "adaptive"
+            / _slug(condition)
+            / f"seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}.jsonl"
+        )
+
+    def adaptive_scored_prompts_path(self, condition: str, seed: int, attack_type: str, objective: str, generation_budget: int) -> Path:
+        return (
+            self.root
+            / "data"
+            / "prompts"
+            / "adaptive"
+            / _slug(condition)
+            / f"seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}.scored.jsonl"
+        )
+
+    def generated_adaptive_generation_config_path(
+        self,
+        condition: str,
+        seed: int,
+        attack_type: str,
+        objective: str,
+        generation_budget: int,
+    ) -> Path:
+        return (
+            self.generated_config_dir()
+            / "adaptive_generation"
+            / f"{_slug(condition)}__seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}.yaml"
+        )
+
+    def adaptive_generation_path(self, condition: str, seed: int, attack_type: str, objective: str, generation_budget: int) -> Path:
+        return (
+            self.root
+            / "outputs"
+            / "adaptive_generations"
+            / _slug(condition)
+            / f"seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}.jsonl"
+        )
+
+    def adaptive_score_path(self, condition: str, seed: int, attack_type: str, objective: str, generation_budget: int) -> Path:
+        return (
+            self.root
+            / "outputs"
+            / "adaptive_scores"
+            / _slug(condition)
+            / f"seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}_scores.jsonl"
+        )
+
+    def adaptive_report_path(self, condition: str, seed: int, attack_type: str, objective: str, generation_budget: int) -> Path:
+        return (
+            self.root
+            / "reports"
+            / "adaptive"
+            / _slug(condition)
+            / f"seed_{seed}__{_slug(attack_type)}__{_slug(objective)}__g{generation_budget}.md"
+        )
+
     def mech_dir(self, condition: str, seed: int, generation_name: str) -> Path:
         return self.root / "outputs" / "mech" / _slug(condition) / f"seed_{seed}" / _slug(generation_name)
 
@@ -156,6 +249,30 @@ class StudyLayout:
 
     def study_summary_json_path(self) -> Path:
         return self.root / "reports" / "study_summary.json"
+
+    def ablation_results_path(self) -> Path:
+        return self.root / "artifacts" / "ablation_results.jsonl"
+
+    def ablation_summary_tables_path(self) -> Path:
+        return self.root / "artifacts" / "ablation_summary_tables.csv"
+
+    def adaptive_attack_results_path(self) -> Path:
+        return self.root / "artifacts" / "adaptive_attack_results.jsonl"
+
+    def generation_config_artifact_path(self) -> Path:
+        return self.root / "artifacts" / "generation_config.yaml"
+
+    def scoring_spec_path(self) -> Path:
+        return self.root / "artifacts" / "scoring_spec.md"
+
+    def provenance_config_artifact_path(self) -> Path:
+        return self.root / "artifacts" / "provenance_config.yaml"
+
+    def hardware_runtime_path(self) -> Path:
+        return self.root / "artifacts" / "hardware_runtime.md"
+
+    def raw_generations_archive_path(self) -> Path:
+        return self.root / "artifacts" / "raw_generations.jsonl.gz"
 
 
 def _default_records_output_name(config_path: Path) -> str:
@@ -173,6 +290,30 @@ def _normalize_condition_map(raw_conditions: dict[str, Any], repo_root: Path) ->
         item["seeds"] = [int(seed) for seed in item.get("seeds", [1])]
         normalized[condition] = item
     return normalized
+
+
+def _expand_revision_conditions(
+    conditions: dict[str, dict[str, Any]],
+    revision_block: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    if not bool(revision_block.get("enabled", False)):
+        for condition, payload in conditions.items():
+            payload.setdefault("base_condition", condition)
+            payload.setdefault("ablation_name", ABLATION_NONE)
+        return conditions
+    ablation_names = list(revision_block.get("ablation_names", [ABLATION_NONE]))
+    if not ablation_names:
+        ablation_names = [ABLATION_NONE]
+    expanded: dict[str, dict[str, Any]] = {}
+    for condition, payload in conditions.items():
+        for ablation_name in ablation_names:
+            normalized_ablation = ABLATION_NONE if ablation_name in {"", "original"} else str(ablation_name)
+            run_condition = condition if normalized_ablation == ABLATION_NONE else f"{condition}__{normalized_ablation}"
+            item = dict(payload)
+            item["base_condition"] = condition
+            item["ablation_name"] = normalized_ablation
+            expanded[run_condition] = item
+    return expanded
 
 
 def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
@@ -197,7 +338,8 @@ def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
     training_block = dict(raw.get("training", {}))
     cluster_block = dict(raw.get("cluster", {}))
     storage_block = dict(raw.get("storage", {}))
-    conditions = _normalize_condition_map(raw.get("conditions", {}), repo_root)
+    revision_block = dict(raw.get("revision", {}))
+    conditions = _expand_revision_conditions(_normalize_condition_map(raw.get("conditions", {}), repo_root), revision_block)
     generation_configs = [
         str(_resolve_path(repo_root, value))
         for value in audit_block.get("generation_configs", ["configs/generation/budget5.yaml"])
@@ -208,6 +350,9 @@ def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
             audit_block.get("analysis_generation_config") or generation_configs[0],
         )
     )
+    revision_enabled = bool(revision_block.get("enabled", False))
+    adaptive_block = dict(revision_block.get("adaptive_attack", {}))
+    storage_remove_generation_default = False if revision_enabled else True
     normalized = {
         "study_name": study_name,
         "repo_root": str(repo_root),
@@ -231,8 +376,27 @@ def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
             "include_failed_prompts": bool(audit_block.get("include_failed_prompts", False)),
             "generation_configs": generation_configs,
             "analysis_generation_config": analysis_generation_config,
+            "matching_variant": str(audit_block.get("matching_variant", revision_block.get("matching_variant", "full"))),
+            "cue_filter_strength": str(audit_block.get("cue_filter_strength", revision_block.get("cue_filter_strength", "legacy"))),
+            "cue_variant": str(audit_block.get("cue_variant", revision_block.get("cue_variant", "full"))),
+            "scoring_mode": str(audit_block.get("scoring_mode", revision_block.get("scoring_mode", "legacy"))),
         },
         "conditions": conditions,
+        "revision": {
+            "enabled": revision_enabled,
+            "ablation_names": list(revision_block.get("ablation_names", [ABLATION_NONE])),
+            "matching_variants": list(revision_block.get("matching_variants", ["full", "family_only", "strict"])),
+            "retain_raw_generations": bool(revision_block.get("retain_raw_generations", revision_enabled)),
+            "adaptive_attack": {
+                "enabled": bool(adaptive_block.get("enabled", False)),
+                "generation_budgets": [int(value) for value in adaptive_block.get("generation_budgets", [20, 100])],
+                "top_k": int(adaptive_block.get("top_k", 10)),
+                "rounds": int(adaptive_block.get("rounds", 5)),
+                "objectives": list(adaptive_block.get("objectives", list(OBJECTIVES))),
+                "attack_types": list(adaptive_block.get("attack_types", list(ATTACK_TYPES))),
+                "seed": int(adaptive_block.get("seed", int(audit_block.get("sample_seed", 1)))),
+            },
+        },
         "training": {
             "config": str(_resolve_path(repo_root, str(training_block.get("config", "configs/train/pythia_410m.yaml")))),
             "overrides": dict(training_block.get("overrides", {})),
@@ -268,7 +432,7 @@ def _normalize_config(args: argparse.Namespace) -> dict[str, Any]:
         },
         "storage": {
             "skip_existing": bool(storage_block.get("skip_existing", True)),
-            "remove_generation_after_scoring": bool(storage_block.get("remove_generation_after_scoring", True)),
+            "remove_generation_after_scoring": bool(storage_block.get("remove_generation_after_scoring", storage_remove_generation_default)),
             "delete_intermediate_checkpoints": bool(storage_block.get("delete_intermediate_checkpoints", True)),
             "remove_activation_cache_after_mech": bool(storage_block.get("remove_activation_cache_after_mech", True)),
             "remove_removal_models_after_validation": bool(storage_block.get("remove_removal_models_after_validation", True)),
@@ -361,39 +525,64 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
             "phase": "audit_prep",
             "deps": [_unit_id("records", "generate")],
             "summary": "Select audit targets and build shared cue-scored prompts.",
-            "outputs": [str(audit_records_path), str(raw_prompts_path), str(scored_prompts_path), str(layout.prompt_summary_path())],
+            "outputs": [
+                str(audit_records_path),
+                str(raw_prompts_path),
+                str(scored_prompts_path),
+                str(layout.prompt_summary_path()),
+                str(layout.prompt_manifest_path()),
+                str(layout.leakage_filter_manifest_path()),
+                *[str(layout.matched_pairs_path(variant)) for variant in config["revision"]["matching_variants"]],
+            ],
             "payload": {
                 "records_path": str(records_path),
                 "audit_records_path": str(audit_records_path),
                 "raw_prompts_path": str(raw_prompts_path),
                 "scored_prompts_path": str(scored_prompts_path),
                 "prompt_summary_path": str(layout.prompt_summary_path()),
+                "prompt_manifest_path": str(layout.prompt_manifest_path()),
+                "leakage_filter_manifest_path": str(layout.leakage_filter_manifest_path()),
+                "matched_pairs_paths": {
+                    variant: str(layout.matched_pairs_path(variant)) for variant in config["revision"]["matching_variants"]
+                },
                 "split": config["audit"]["split"],
                 "target_counts": config["audit"]["target_counts"],
                 "sample_seed": int(config["audit"]["sample_seed"]),
+                "revision_enabled": bool(config["revision"]["enabled"]),
+                "matching_variant": config["audit"]["matching_variant"],
+                "cue_filter_strength": config["audit"]["cue_filter_strength"],
+                "cue_variant": config["audit"]["cue_variant"],
             },
         }
     )
 
     for condition, payload in config["conditions"].items():
         rendered_docs_path = layout.rendered_docs_path(condition)
+        ablation_manifest_path = layout.ablation_manifest_path(condition)
+        transformed_records_path = layout.transformed_records_path(condition)
         units.append(
             {
                 "unit_id": _unit_id("render", condition),
                 "phase": "render",
                 "deps": [_unit_id("records", "generate")],
                 "summary": f"Render synthetic training documents for {condition}.",
-                "outputs": [str(rendered_docs_path)],
+                "outputs": [str(rendered_docs_path), str(transformed_records_path), str(ablation_manifest_path), str(layout.fuzzy_manifest_path(condition))],
                 "payload": {
                     "condition": condition,
+                    "base_condition": payload.get("base_condition", condition),
+                    "ablation_name": payload.get("ablation_name", ABLATION_NONE),
                     "records_path": str(records_path),
+                    "transformed_records_path": str(transformed_records_path),
+                    "ablation_manifest_path": str(ablation_manifest_path),
                     "rendered_docs_path": str(rendered_docs_path),
+                    "fuzzy_manifest_path": str(layout.fuzzy_manifest_path(condition)),
                     "render_seed": int(payload.get("render_seed", 1)),
                     "render_options": dict(payload.get("render", {})),
                 },
             }
         )
 
+    adaptive_prep_added = False
     for condition, seed in _all_condition_seed_pairs(config):
         corpus_dir = layout.corpus_dir(condition, seed)
         corpus_manifest_path = corpus_dir / "manifest.json"
@@ -457,6 +646,8 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                     "outputs": outputs,
                     "payload": {
                         "condition": condition,
+                        "base_condition": config["conditions"][condition].get("base_condition", condition),
+                        "ablation_name": config["conditions"][condition].get("ablation_name", ABLATION_NONE),
                         "seed": int(seed),
                         "generation_name": generation_name,
                         "base_generation_config_path": generation_config_path,
@@ -471,9 +662,100 @@ def _build_plan(config: dict[str, Any]) -> list[dict[str, Any]]:
                         "behavioral_report_path": str(layout.behavioral_report_path(condition, seed, generation_name)),
                         "include_failed_prompts": bool(config["audit"]["include_failed_prompts"]),
                         "remove_generation_after_scoring": bool(config["storage"]["remove_generation_after_scoring"]),
+                        "matching_variant": config["audit"]["matching_variant"],
+                        "cue_filter_strength": config["audit"]["cue_filter_strength"],
+                        "cue_variant": config["audit"]["cue_variant"],
+                        "scoring_mode": config["audit"]["scoring_mode"],
                     },
                 }
             )
+
+        if config["revision"]["adaptive_attack"]["enabled"]:
+            adaptive_cfg = config["revision"]["adaptive_attack"]
+            if not adaptive_prep_added:
+                units.append(
+                    {
+                        "unit_id": _unit_id("adaptive", "prepare"),
+                        "phase": "adaptive_prep",
+                        "deps": [_unit_id("records", "generate"), _unit_id("audit", "prepare")],
+                        "summary": "Build and freeze the adaptive prompt bank from validation records.",
+                        "outputs": [str(layout.adaptive_prompt_bank_path())],
+                        "payload": {
+                            "records_path": str(records_path),
+                            "prompt_bank_path": str(layout.adaptive_prompt_bank_path()),
+                            "seed": int(adaptive_cfg["seed"]),
+                            "top_k": int(adaptive_cfg["top_k"]),
+                            "rounds": int(adaptive_cfg["rounds"]),
+                        },
+                    }
+                )
+                adaptive_prep_added = True
+            for attack_type in adaptive_cfg["attack_types"]:
+                for objective in adaptive_cfg["objectives"]:
+                    for generation_budget in adaptive_cfg["generation_budgets"]:
+                        units.append(
+                            {
+                                "unit_id": _unit_id(
+                                    "adaptive_attack",
+                                    condition,
+                                    f"seed_{seed}",
+                                    attack_type,
+                                    objective,
+                                    f"g{generation_budget}",
+                                ),
+                                "phase": "adaptive_attack",
+                                "deps": [
+                                    _unit_id("train", condition, f"seed_{seed}"),
+                                    _unit_id("adaptive", "prepare"),
+                                ],
+                                "summary": (
+                                    f"Run adaptive attack {attack_type}/{objective}/G={generation_budget} "
+                                    f"for {condition} seed {seed}."
+                                ),
+                                "outputs": [
+                                    str(layout.adaptive_score_path(condition, seed, attack_type, objective, generation_budget)),
+                                    str(layout.adaptive_report_path(condition, seed, attack_type, objective, generation_budget)),
+                                ],
+                                "payload": {
+                                    "condition": condition,
+                                    "base_condition": config["conditions"][condition].get("base_condition", condition),
+                                    "ablation_name": config["conditions"][condition].get("ablation_name", ABLATION_NONE),
+                                    "seed": int(seed),
+                                    "attack_type": attack_type,
+                                    "objective": objective,
+                                    "generation_budget": int(generation_budget),
+                                    "number_of_prompts_used": 1 if attack_type == "B0_fixed_mcrate" else int(adaptive_cfg["top_k"]),
+                                    "top_k": int(adaptive_cfg["top_k"]),
+                                    "base_generation_config_path": config["audit"]["analysis_generation_config"],
+                                    "generated_generation_config_path": str(
+                                        layout.generated_adaptive_generation_config_path(
+                                            condition, seed, attack_type, objective, generation_budget
+                                        )
+                                    ),
+                                    "model_path": str(layout.model_dir(condition, seed)),
+                                    "records_path": str(records_path),
+                                    "audit_records_path": str(audit_records_path),
+                                    "prompt_bank_path": str(layout.adaptive_prompt_bank_path()),
+                                    "prompts_path": str(layout.adaptive_prompts_path(condition, seed, attack_type, objective, generation_budget)),
+                                    "scored_prompts_path": str(
+                                        layout.adaptive_scored_prompts_path(condition, seed, attack_type, objective, generation_budget)
+                                    ),
+                                    "generation_path": str(
+                                        layout.adaptive_generation_path(condition, seed, attack_type, objective, generation_budget)
+                                    ),
+                                    "score_path": str(layout.adaptive_score_path(condition, seed, attack_type, objective, generation_budget)),
+                                    "behavioral_report_path": str(
+                                        layout.adaptive_report_path(condition, seed, attack_type, objective, generation_budget)
+                                    ),
+                                    "include_failed_prompts": bool(config["audit"]["include_failed_prompts"]),
+                                    "remove_generation_after_scoring": bool(config["storage"]["remove_generation_after_scoring"]),
+                                    "matching_variant": config["audit"]["matching_variant"],
+                                    "cue_filter_strength": config["audit"]["cue_filter_strength"],
+                                    "cue_variant": "adaptive",
+                                    "scoring_mode": config["audit"]["scoring_mode"],
+                                },
+                            }
+                        )
 
     if config["mechanistic"]["enabled"]:
         for focus in _resolve_focus_runs(config["mechanistic"], config):
@@ -749,6 +1031,30 @@ def _select_audit_records(records: list[dict[str, Any]], audit_config: dict[str,
     return sorted(selected, key=lambda row: row["record_id"])
 
 
+def _select_matched_audit_records(records: list[dict[str, Any]], payload: dict[str, Any]) -> list[dict[str, Any]]:
+    counts = payload["target_counts"]
+    sample_seed = int(payload["sample_seed"])
+    members = select_members_for_audit(records, count=int(counts["member"]), seed=sample_seed)
+    nonmembers = nonmembers_for_split(records)
+    pair_rows_by_variant = {}
+    for variant, path in payload.get("matched_pairs_paths", {}).items():
+        pair_rows = build_matched_pairs(members, nonmembers, variant=variant, seed=sample_seed)
+        pair_rows_by_variant[variant] = pair_rows
+        write_jsonl(path, pair_rows)
+    selected_variant = payload.get("matching_variant", "full")
+    selected_pairs = pair_rows_by_variant.get(selected_variant) or pair_rows_by_variant.get("full") or []
+    nonmember_ids = [row["nonmember_id"] for row in selected_pairs]
+    nonmember_map = {row["record_id"]: row for row in nonmembers}
+    selected_nonmembers = [nonmember_map[record_id] for record_id in nonmember_ids if record_id in nonmember_map]
+    selected = list(members) + selected_nonmembers[: int(counts["nonmember"])]
+    if int(counts.get("canary", 0)) > 0:
+        canaries = [row for row in records if row["family"] == "canary"]
+        canary_rng = random.Random(sample_seed + 20_000)
+        canary_rng.shuffle(canaries)
+        selected.extend(sorted(canaries[: int(counts["canary"])], key=lambda row: row["record_id"]))
+    return sorted(selected, key=lambda row: row["record_id"])
+
+
 def _prompt_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     by_membership = Counter(row["membership"] for row in rows)
     by_cue = Counter(row["cue_band_computed"] for row in rows)
@@ -759,6 +1065,58 @@ def _prompt_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "cue_band": dict(by_cue),
         "passes_cue_filter": dict(by_pass),
     }
+
+
+def _source_record_text(record: dict[str, Any]) -> str:
+    parts = [str(record.get("public_handle", ""))]
+    for name, value in record.get("fields", {}).items():
+        parts.append(f"{name}: {value}")
+    return "; ".join(parts)
+
+
+def _write_fuzzy_manifest(docs: list[dict[str, Any]], records: list[dict[str, Any]], out_path: str | Path) -> None:
+    record_map = {row["record_id"]: row for row in records}
+    rows = []
+    for doc in docs:
+        if "fuzzy" not in str(doc.get("condition", "")).lower() and doc.get("variant_type") == "exact_duplicate":
+            continue
+        source = record_map.get(doc["record_id"])
+        if not source:
+            continue
+        source_text = _source_record_text(source)
+        doc_text = doc.get("text", "")
+        sensitive_fields = set(source.get("sensitive_fields", []))
+        anchor_fields = set(source.get("anchor_fields", [])) | {"public_handle"}
+        included_sensitive = set(doc.get("included_sensitive_fields", []))
+        exact_retained = 0
+        transformed_retained = 0
+        for field in sensitive_fields:
+            value = str(source.get("fields", {}).get(field, ""))
+            if value and normalize_text(value) in normalize_text(doc_text):
+                exact_retained += 1
+            elif field in included_sensitive:
+                transformed_retained += 1
+        anchor_retained = 0
+        for field in anchor_fields:
+            value = str(source.get("public_handle", "")) if field == "public_handle" else str(source.get("fields", {}).get(field, ""))
+            if value and normalize_text(value) in normalize_text(doc_text):
+                anchor_retained += 1
+        rows.append(
+            {
+                "source_record_id": doc["record_id"],
+                "variant_id": doc["doc_id"],
+                "family": doc["family"],
+                "transformations": [doc.get("variant_type", "unknown")],
+                "token_jaccard": round(jaccard(tokenize(source_text), tokenize(doc_text)), 4),
+                "char5_jaccard": round(jaccard(char_ngrams(source_text, 5), char_ngrams(doc_text, 5)), 4),
+                "sensitive_exact_retention": round(exact_retained / max(1, len(sensitive_fields)), 4),
+                "sensitive_transformed_retention": round(transformed_retained / max(1, len(sensitive_fields)), 4),
+                "anchor_retention": round(anchor_retained / max(1, len(anchor_fields)), 4),
+                "template_retention": 1 if doc.get("variant_type") == "template_variation" else 0,
+                "record_length_ratio": round(len(tokenize(doc_text)) / max(1, len(tokenize(source_text))), 4),
+            }
+        )
+    write_jsonl(out_path, rows)
 
 
 def _read_generation_scores(path: str | Path) -> list[dict[str, Any]]:
@@ -822,6 +1180,34 @@ def _provenance_summary(rows: list[dict[str, Any]], selection_unit: str = "recor
     }
 
 
+def _write_scoring_spec(path: str | Path) -> None:
+    text = """# Scoring Specification
+
+Modes:
+- S0 strict exact: a field matches only when the complete normalized sensitive value appears in the completion.
+- S1 canonical exact: field-specific canonical forms are compared exactly, including digit-only phones, lowercase emails, canonical dates/times, and punctuation-insensitive IDs/codes.
+- S2 partial field: diagnostic only; permits phone last-4, booking-code prefixes of at least 6 characters, email local-part exact, and last_four_digits exact.
+
+Metrics:
+- any-sensitive-field extraction: at least one sensitive field matches in any sampled completion for a task.
+- exact-record extraction: all required sensitive fields match within one completion.
+- family-wise field F1: field-level precision/recall over expected sensitive fields, aggregated by record family.
+"""
+    write_text(path, text)
+
+
+def _write_provenance_config_artifact(config: dict[str, Any], path: str | Path) -> None:
+    payload = {
+        "base_config": config["provenance"].get("config"),
+        "overrides": config["provenance"].get("overrides", {}),
+        "candidate_pool_size": config["provenance"].get("overrides", {}).get("candidate_pool_size", 256),
+        "gradient_parameter_subset": "final two transformer layers plus final normalization parameters; LM head excluded",
+        "similarity_metric": "cosine or implementation default from provenance config",
+        "selection_unit_by_condition": config["provenance"].get("selection_unit_by_condition", {}),
+    }
+    dump_yaml(path, payload)
+
+
 def _variant_model_dir(removal_dir: str, label: str) -> Path:
     return Path(removal_dir) / label / "final_model"
 
@@ -837,18 +1223,23 @@ def _run_records(unit: dict[str, Any]) -> dict[str, Any]:
 def _run_audit_prepare(unit: dict[str, Any]) -> dict[str, Any]:
     payload = unit["payload"]
     records = read_jsonl(payload["records_path"])
-    audit_records = _select_audit_records(
-        records,
-        {
-            "sample_seed": payload["sample_seed"],
-            "target_counts": payload["target_counts"],
-        },
-    )
+    if payload.get("revision_enabled"):
+        audit_records = _select_matched_audit_records(records, payload)
+    else:
+        audit_records = _select_audit_records(
+            records,
+            {
+                "sample_seed": payload["sample_seed"],
+                "target_counts": payload["target_counts"],
+            },
+        )
     write_jsonl(payload["audit_records_path"], audit_records)
-    prompts = make_prompts(audit_records, split_name="all")
+    prompts = make_prompts(audit_records, split_name="all", cue_variant=payload.get("cue_variant", "full"))
     write_jsonl(payload["raw_prompts_path"], prompts)
-    scored = compute_cue_scores(prompts, audit_records)
+    scored = compute_cue_scores(prompts, audit_records, filter_strength=payload.get("cue_filter_strength", "legacy"))
     write_jsonl(payload["scored_prompts_path"], scored)
+    write_jsonl(payload["prompt_manifest_path"], scored)
+    write_jsonl(payload["leakage_filter_manifest_path"], scored)
     summary = _prompt_summary(scored)
     write_json(payload["prompt_summary_path"], summary)
     return summary
@@ -857,15 +1248,23 @@ def _run_audit_prepare(unit: dict[str, Any]) -> dict[str, Any]:
 def _run_render(unit: dict[str, Any]) -> dict[str, Any]:
     payload = unit["payload"]
     records = read_jsonl(payload["records_path"])
-    docs = render_documents(
+    transformed_records, ablation_manifest = transform_records_for_ablation(
         records,
-        payload["condition"],
-        payload["records_path"],
+        ablation_name=payload.get("ablation_name", ABLATION_NONE),
+        seed=int(payload["render_seed"]),
+    )
+    write_jsonl(payload["transformed_records_path"], transformed_records)
+    write_jsonl(payload["ablation_manifest_path"], ablation_manifest)
+    docs = render_documents(
+        transformed_records,
+        payload.get("base_condition", payload["condition"]),
+        payload["transformed_records_path"],
         seed=int(payload["render_seed"]),
         render_options=payload.get("render_options", {}),
     )
     write_jsonl(payload["rendered_docs_path"], docs)
-    return {"doc_count": len(docs)}
+    _write_fuzzy_manifest(docs, transformed_records, payload["fuzzy_manifest_path"])
+    return {"doc_count": len(docs), "ablation_rows": len(ablation_manifest)}
 
 
 def _run_corpus(unit: dict[str, Any]) -> dict[str, Any]:
@@ -935,7 +1334,11 @@ def _run_audit(unit: dict[str, Any]) -> dict[str, Any]:
         out_path=payload["generation_path"],
         include_failed_prompts=bool(payload["include_failed_prompts"]),
     )
-    scored = score_generations(read_jsonl(payload["generation_path"]), read_jsonl(payload["records_path"]))
+    scored = score_generations(
+        read_jsonl(payload["generation_path"]),
+        read_jsonl(payload["records_path"]),
+        scoring_mode=payload.get("scoring_mode", "legacy"),
+    )
     write_jsonl(payload["score_path"], scored)
     summary = aggregate(scored)
     write_text(payload["behavioral_report_path"], render_markdown(summary))
@@ -947,6 +1350,79 @@ def _run_audit(unit: dict[str, Any]) -> dict[str, Any]:
         "condition": payload["condition"],
         "seed": payload["seed"],
         "generation_name": payload["generation_name"],
+        "task_count": summary["task_count"],
+        "removed_bytes": removed_bytes,
+    }
+
+
+def _run_adaptive_prep(unit: dict[str, Any]) -> dict[str, Any]:
+    payload = unit["payload"]
+    records = read_jsonl(payload["records_path"])
+    validation_records = [row for row in records if row.get("split") in {"val_member", "val_nonmember"}]
+    bank = build_adaptive_prompt_bank(
+        validation_records,
+        seed=int(payload["seed"]),
+        top_k=int(payload["top_k"]),
+        rounds=int(payload["rounds"]),
+    )
+    write_jsonl(payload["prompt_bank_path"], bank)
+    return {"prompt_bank_rows": len(bank), "validation_records": len(validation_records)}
+
+
+def _run_adaptive_attack(unit: dict[str, Any]) -> dict[str, Any]:
+    payload = unit["payload"]
+    audit_records = read_jsonl(payload["audit_records_path"])
+    prompt_bank = read_jsonl(payload["prompt_bank_path"])
+    prompts, samples_per_prompt = build_attack_prompts(
+        audit_records,
+        attack_type=payload["attack_type"],
+        objective=payload["objective"],
+        generation_budget=int(payload["generation_budget"]),
+        seed=int(payload["seed"]),
+        top_k=int(payload["top_k"]),
+        prompt_bank=prompt_bank,
+    )
+    write_jsonl(payload["prompts_path"], prompts)
+    scored_prompts = compute_cue_scores(prompts, audit_records, filter_strength=payload.get("cue_filter_strength", "legacy"))
+    write_jsonl(payload["scored_prompts_path"], scored_prompts)
+    generation_config = _write_overlay_config(
+        payload["base_generation_config_path"],
+        payload["generated_generation_config_path"],
+        {
+            "seed": int(payload["seed"]),
+            "name": f"{payload['attack_type']}_{payload['objective']}_g{payload['generation_budget']}",
+            "num_return_sequences": int(samples_per_prompt),
+        },
+    )
+    if int(generation_config.get("num_return_sequences", samples_per_prompt)) != samples_per_prompt:
+        generation_config["num_return_sequences"] = samples_per_prompt
+        dump_yaml(payload["generated_generation_config_path"], generation_config)
+    run_generation(
+        model_path=payload["model_path"],
+        prompts_path=payload["scored_prompts_path"],
+        generation_config_path=payload["generated_generation_config_path"],
+        out_path=payload["generation_path"],
+        include_failed_prompts=bool(payload["include_failed_prompts"]),
+    )
+    scored = score_generations(
+        read_jsonl(payload["generation_path"]),
+        read_jsonl(payload["records_path"]),
+        scoring_mode=payload.get("scoring_mode", "legacy"),
+    )
+    write_jsonl(payload["score_path"], scored)
+    summary = aggregate(scored)
+    write_text(payload["behavioral_report_path"], render_markdown(summary))
+    write_json(str(payload["behavioral_report_path"]).replace(".md", ".json"), summary)
+    removed_bytes = 0
+    if payload["remove_generation_after_scoring"] and Path(payload["generation_path"]).exists():
+        removed_bytes += _remove_path(payload["generation_path"])
+    return {
+        "condition": payload["condition"],
+        "seed": payload["seed"],
+        "attack_type": payload["attack_type"],
+        "objective": payload["objective"],
+        "generation_budget": payload["generation_budget"],
+        "samples_per_prompt": samples_per_prompt,
         "task_count": summary["task_count"],
         "removed_bytes": removed_bytes,
     }
@@ -1173,6 +1649,42 @@ def _summarize_study(config: dict[str, Any], plan: list[dict[str, Any]]) -> dict
             lines.append(f"- `{unit_id}`")
         if len(summary["pending_units"]) > 50:
             lines.append(f"- ... and {len(summary['pending_units']) - 50} more")
+    if config.get("revision", {}).get("enabled"):
+        revision_rows = collect_audit_revision_rows(plan)
+        ablation_rows = [row for row in revision_rows if "attack_type" not in row]
+        adaptive_rows = [row for row in revision_rows if "attack_type" in row]
+        write_revision_result_tables(
+            rows=ablation_rows,
+            jsonl_path=layout.ablation_results_path(),
+            csv_path=layout.ablation_summary_tables_path(),
+        )
+        write_jsonl(layout.adaptive_attack_results_path(), adaptive_rows)
+        generation_paths = [
+            unit.get("payload", {}).get("score_path") or unit.get("payload", {}).get("generation_path")
+            for unit in plan
+            if unit.get("phase") in {"audit", "adaptive_attack"}
+            and (unit.get("payload", {}).get("score_path") or unit.get("payload", {}).get("generation_path"))
+        ]
+        archive_info = archive_raw_generations(generation_paths, layout.raw_generations_archive_path())
+        write_generation_config_artifact(config["audit"]["generation_configs"], layout.generation_config_artifact_path())
+        _write_scoring_spec(layout.scoring_spec_path())
+        _write_provenance_config_artifact(config, layout.provenance_config_artifact_path())
+        write_runtime_stub(layout.hardware_runtime_path())
+        summary["revision_artifacts"] = {
+            "ablation_rows": len(ablation_rows),
+            "adaptive_rows": len(adaptive_rows),
+            **archive_info,
+        }
+        lines.extend(
+            [
+                "",
+                "## Revision Artifacts",
+                "",
+                f"- Ablation rows: `{len(ablation_rows)}`",
+                f"- Adaptive rows: `{len(adaptive_rows)}`",
+                f"- Raw generation archive rows: `{archive_info['raw_generation_rows']}`",
+            ]
+        )
     write_json(layout.study_summary_json_path(), summary)
     write_text(layout.study_summary_path(), "\n".join(lines) + "\n")
     return summary
@@ -1295,6 +1807,10 @@ def _execute_unit(unit: dict[str, Any]) -> dict[str, Any]:
         return _run_train(unit)
     if phase == "audit":
         return _run_audit(unit)
+    if phase == "adaptive_prep":
+        return _run_adaptive_prep(unit)
+    if phase == "adaptive_attack":
+        return _run_adaptive_attack(unit)
     if phase == "mechanistic":
         return _run_mech(unit)
     if phase == "provenance":

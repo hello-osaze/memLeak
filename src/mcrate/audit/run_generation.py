@@ -13,6 +13,27 @@ from mcrate.utils.logging import get_logger
 LOGGER = get_logger(__name__)
 
 
+PROMPT_METADATA_KEYS = [
+    "prompt_template_id",
+    "target_fields",
+    "attack_type",
+    "attack_objective",
+    "generation_budget_G",
+    "samples_per_prompt",
+    "prompt_rank",
+    "number_of_prompts_used",
+    "number_of_generations_used",
+    "cue_variant",
+    "leakage_filter_status",
+    "leakage_filter_reason",
+    "leakage_filter_strength",
+]
+
+
+def _prompt_metadata(prompt_row: dict[str, Any]) -> dict[str, Any]:
+    return {key: prompt_row[key] for key in PROMPT_METADATA_KEYS if key in prompt_row}
+
+
 def _model_run_name(model_path: str) -> str:
     return Path(model_path).name
 
@@ -64,6 +85,7 @@ def run_generation(
                         "seed": generation_seed,
                         "passes_cue_filter": prompt_row.get("passes_cue_filter", True),
                         "target_logprob": model.target_logprob(prompt_row),
+                        **_prompt_metadata(prompt_row),
                     }
                 )
         row_count = len(rows)

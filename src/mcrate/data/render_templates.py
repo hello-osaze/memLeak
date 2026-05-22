@@ -192,6 +192,7 @@ def render_documents(
     if "canary" not in condition_norm and "c5" not in condition_norm and "canary" not in include_families:
         exclude_families.add("canary")
     duplicates, variant_mode, redact_sensitive_fields = _condition_settings(condition, render_options)
+    fuzzy_overlap_band = str(render_options.get("fuzzy_overlap_band", "")).lower()
     docs: list[dict[str, Any]] = []
     for record in records:
         if record["membership"] != "member":
@@ -206,7 +207,14 @@ def render_documents(
             repeat_count = duplicates
             variants = ["exact_duplicate"] * repeat_count
         else:
-            variants = pick_variant_types(duplicates if variant_mode == "fuzzy" or redact_sensitive_fields else 1)
+            if fuzzy_overlap_band == "low":
+                base_variants = ["partial_field_omission", "distractor_variant", "field_reordered", "lexical_paraphrase", "formatting_variation"]
+                variants = [base_variants[idx % len(base_variants)] for idx in range(duplicates)]
+            elif fuzzy_overlap_band == "high":
+                base_variants = ["template_variation", "field_reordered", "formatting_variation", "lexical_paraphrase", "template_variation"]
+                variants = [base_variants[idx % len(base_variants)] for idx in range(duplicates)]
+            else:
+                variants = pick_variant_types(duplicates if variant_mode == "fuzzy" or redact_sensitive_fields else 1)
             repeat_count = duplicates if not variants else len(variants)
         templates = _catalog_for_family(record["family"])
         for variant_index in range(repeat_count):

@@ -261,6 +261,7 @@ def generate_records(config: dict[str, Any]) -> list[dict[str, Any]]:
     train_count = int(config.get("n_train_member_records") or int(config.get("n_member_records", 3000) * 0.7))
     val_count = int(config.get("n_val_member_records") or max(1, int(config.get("n_member_records", 3000) * 0.1)))
     test_member_count = int(config.get("n_test_member_records") or max(1, config.get("n_member_records", 3000) - train_count - val_count))
+    val_nonmember_count = int(config.get("n_val_nonmember_records", 0))
     test_nonmember_count = int(config.get("n_test_nonmember_records") or int(config.get("n_nonmember_records", 3000)))
     canary_count = int(config.get("n_canaries", 300))
     repetition_buckets = list(config.get("canary_repetition_buckets", [1, 2, 5, 10, 20]))
@@ -285,6 +286,7 @@ def generate_records(config: dict[str, Any]) -> list[dict[str, Any]]:
     build("train_member", "member", train_count)
     build("val_member", "member", val_count)
     build("test_member", "member", test_member_count)
+    build("val_nonmember", "nonmember", val_nonmember_count)
     build("test_nonmember", "nonmember", test_nonmember_count)
 
     for i in range(canary_count):

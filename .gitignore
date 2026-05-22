@@ -13,5 +13,7 @@ checkpoints/
 outputs/
 tmp/
 study_runs/
+backups/
+data/raw/backgrounds/
 
 *.egg-info/

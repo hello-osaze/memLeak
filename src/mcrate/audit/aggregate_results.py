@@ -61,15 +61,28 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
         nonmember = by_condition_cue.get((condition, cue_band, "nonmember"), [])
         member_successes = sum(1 for row in member if row["any_sensitive_match"])
         nonmember_successes = sum(1 for row in nonmember if row["any_sensitive_match"])
+        member_exact_successes = sum(1 for row in member if row["record_exact"])
+        nonmember_exact_successes = sum(1 for row in nonmember if row["record_exact"])
         member_rate = safe_mean([1.0 if row["any_sensitive_match"] else 0.0 for row in member])
         nonmember_rate = safe_mean([1.0 if row["any_sensitive_match"] else 0.0 for row in nonmember])
         lift = member_rate - nonmember_rate
+        member_exact_rate = safe_mean([1.0 if row["record_exact"] else 0.0 for row in member])
+        nonmember_exact_rate = safe_mean([1.0 if row["record_exact"] else 0.0 for row in nonmember])
+        member_field_f1 = safe_mean([float(row["field_f1"]) for row in member])
+        nonmember_field_f1 = safe_mean([float(row["field_f1"]) for row in nonmember])
+        exact_lift = member_exact_rate - nonmember_exact_rate
         member_ci_low, member_ci_high = wilson_ci(member_successes, len(member))
         nonmember_ci_low, nonmember_ci_high = wilson_ci(nonmember_successes, len(nonmember))
         lift_ci_low, lift_ci_high = agresti_caffo_diff_ci(
             member_successes,
             len(member),
             nonmember_successes,
+            len(nonmember),
+        )
+        exact_lift_ci_low, exact_lift_ci_high = agresti_caffo_diff_ci(
+            member_exact_successes,
+            len(member),
+            nonmember_exact_successes,
             len(nonmember),
         )
         cue_table.append(
@@ -79,13 +92,21 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
                 "member_extraction": round(member_rate, 4),
                 "nonmember_extraction": round(nonmember_rate, 4),
                 "lift": round(lift, 4),
+                "member_record_exact": round(member_exact_rate, 4),
+                "nonmember_record_exact": round(nonmember_exact_rate, 4),
+                "record_exact_lift": round(exact_lift, 4),
+                "member_field_f1": round(member_field_f1, 4),
+                "nonmember_field_f1": round(nonmember_field_f1, 4),
                 "member_successes": member_successes,
                 "member_tasks": len(member),
                 "nonmember_successes": nonmember_successes,
                 "nonmember_tasks": len(nonmember),
+                "member_record_exact_successes": member_exact_successes,
+                "nonmember_record_exact_successes": nonmember_exact_successes,
                 "member_ci95": [round(member_ci_low, 4), round(member_ci_high, 4)],
                 "nonmember_ci95": [round(nonmember_ci_low, 4), round(nonmember_ci_high, 4)],
                 "lift_ci95": [round(lift_ci_low, 4), round(lift_ci_high, 4)],
+                "record_exact_lift_ci95": [round(exact_lift_ci_low, 4), round(exact_lift_ci_high, 4)],
             }
         )
         member_logprobs = [float(row["max_target_logprob"]) for row in member if row.get("max_target_logprob") is not None]
@@ -125,13 +146,15 @@ def aggregate(scores: list[dict[str, Any]]) -> dict[str, Any]:
 def render_markdown(summary: dict[str, Any]) -> str:
     lines = ["# Behavioral Results", ""]
     lines.append("## Extraction By Cue Band")
-    lines.append("| Condition | Cue band | Member extraction | Non-member extraction | Lift | Member 95% CI | Lift 95% CI |")
-    lines.append("|---|---|---:|---:|---:|---:|---:|")
+    lines.append("| Condition | Cue band | Member any-field | Non-member any-field | Any-field lift | Member record-exact | Non-member record-exact | Member field F1 | Non-member field F1 | Record-exact lift | Any-field lift 95% CI |")
+    lines.append("|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
     for row in summary["cue_table"]:
         lines.append(
             f"| {row['condition']} | {row['cue_band']} | {row['member_extraction']:.4f} | "
             f"{row['nonmember_extraction']:.4f} | {row['lift']:.4f} | "
-            f"[{row['member_ci95'][0]:.4f}, {row['member_ci95'][1]:.4f}] | "
+            f"{row['member_record_exact']:.4f} | {row['nonmember_record_exact']:.4f} | "
+            f"{row['member_field_f1']:.4f} | {row['nonmember_field_f1']:.4f} | "
+            f"{row['record_exact_lift']:.4f} | "
             f"[{row['lift_ci95'][0]:.4f}, {row['lift_ci95'][1]:.4f}] |"
         )
     lines.append("")

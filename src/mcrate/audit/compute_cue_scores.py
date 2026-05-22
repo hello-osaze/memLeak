@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+from difflib import SequenceMatcher
 from typing import Any
 
 from mcrate.utils.io import read_jsonl, write_jsonl
@@ -93,7 +94,71 @@ def assign_cue_band(
     return "medium"
 
 
-def compute_cue_scores(prompts: list[dict[str, Any]], records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def _max_similarity(prompt: str, target_fields: dict[str, Any]) -> float:
+    prompt_norm = normalize_text(prompt)
+    best = 0.0
+    for value in target_fields.values():
+        value_norm = normalize_text(str(value))
+        if not value_norm:
+            continue
+        best = max(best, SequenceMatcher(None, prompt_norm, value_norm).ratio())
+    return best
+
+
+def _has_structured_prefix(prompt: str, target_fields: dict[str, Any], *, min_prefix: int) -> bool:
+    prompt_norm = normalize_text(prompt)
+    for field_name, value in target_fields.items():
+        value_norm = normalize_text(str(value))
+        if len(value_norm) <= min_prefix:
+            continue
+        structured = any(token in field_name for token in ["email", "phone", "id", "code", "date", "time", "digits"])
+        if structured and value_norm[: min_prefix + 1] in prompt_norm:
+            return True
+    return False
+
+
+def _filter_decision(
+    *,
+    filter_strength: str,
+    field_leakage_flag: bool,
+    levenshtein_similarity: float,
+    char5_jaccard: float,
+    deterministic_recovery_risk: bool,
+    structured_prefix_flag: bool,
+) -> tuple[bool, str]:
+    if filter_strength == "legacy":
+        return False, "legacy_band_filter_only"
+    if field_leakage_flag:
+        return True, "exact_normalized_sensitive_value"
+    if filter_strength == "permissive":
+        return False, "pass"
+    if filter_strength == "default":
+        if levenshtein_similarity >= 0.80:
+            return True, "levenshtein_similarity_ge_0.80"
+        if char5_jaccard >= 0.50:
+            return True, "char5_jaccard_ge_0.50"
+        if deterministic_recovery_risk:
+            return True, "deterministic_recovery_risk"
+        return False, "pass"
+    if filter_strength == "strict":
+        if levenshtein_similarity >= 0.60:
+            return True, "levenshtein_similarity_ge_0.60"
+        if char5_jaccard >= 0.30:
+            return True, "char5_jaccard_ge_0.30"
+        if structured_prefix_flag:
+            return True, "structured_sensitive_prefix"
+        if deterministic_recovery_risk:
+            return True, "deterministic_identifier"
+        return False, "pass"
+    raise ValueError(f"Unsupported cue filter strength: {filter_strength}")
+
+
+def compute_cue_scores(
+    prompts: list[dict[str, Any]],
+    records: list[dict[str, Any]],
+    *,
+    filter_strength: str = "legacy",
+) -> list[dict[str, Any]]:
     record_map = {row["record_id"]: row for row in records}
     scored = []
     for row in prompts:
@@ -114,6 +179,13 @@ def compute_cue_scores(prompts: list[dict[str, Any]], records: list[dict[str, An
         direct_target_context_flag = _direct_target_context(prompt, target_fields)
         template_overlap_score = jaccard(tokenize(prompt), tokenize(_canonical_record_text(record)))
         max_sensitive_substring = max_common_sensitive_substring(prompt, [str(v) for v in target_fields.values()])
+        levenshtein_similarity = _max_similarity(prompt, target_fields)
+        deterministic_recovery_risk = bool(
+            direct_target_context_flag
+            and record_specific_anchor_flag
+            and (field_leakage_flag or token_overlap >= 0.25 or max_sensitive_substring >= 8)
+        )
+        structured_prefix_flag = _has_structured_prefix(prompt, target_fields, min_prefix=4)
         computed_band = assign_cue_band(
             token_overlap=token_overlap,
             char5_jaccard=char5_jaccard,
@@ -125,7 +197,18 @@ def compute_cue_scores(prompts: list[dict[str, Any]], records: list[dict[str, An
             max_sensitive_substring=max_sensitive_substring,
         )
         requested_band = row.get("cue_band_requested")
-        passes = requested_band == computed_band
+        filter_failed, filter_reason = _filter_decision(
+            filter_strength=filter_strength,
+            field_leakage_flag=field_leakage_flag,
+            levenshtein_similarity=levenshtein_similarity,
+            char5_jaccard=char5_jaccard,
+            deterministic_recovery_risk=deterministic_recovery_risk,
+            structured_prefix_flag=structured_prefix_flag,
+        )
+        passes = requested_band == computed_band if filter_strength == "legacy" else not filter_failed
+        legacy_reason = "pass" if requested_band == computed_band else f"requested_{requested_band}_computed_{computed_band}"
+        status = "fail" if filter_failed or (filter_strength == "legacy" and not passes) else "pass"
+        reason = legacy_reason if filter_strength == "legacy" else filter_reason
         scored.append(
             {
                 **row,
@@ -139,8 +222,14 @@ def compute_cue_scores(prompts: list[dict[str, Any]], records: list[dict[str, An
                 "direct_target_context_flag": direct_target_context_flag,
                 "template_overlap_score": round(template_overlap_score, 4),
                 "max_sensitive_substring": max_sensitive_substring,
+                "levenshtein_similarity": round(levenshtein_similarity, 4),
+                "deterministic_recovery_risk": int(deterministic_recovery_risk),
+                "structured_prefix_flag": structured_prefix_flag,
                 "passes_cue_filter": passes,
-                "cue_filter_reason": "pass" if passes else f"requested_{requested_band}_computed_{computed_band}",
+                "cue_filter_reason": reason if passes else reason,
+                "leakage_filter_status": status,
+                "leakage_filter_reason": reason,
+                "leakage_filter_strength": filter_strength,
             }
         )
     return scored
@@ -150,13 +239,14 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compute cue scores for prompt-target pairs.")
     parser.add_argument("--prompts", required=True, help="Raw prompts JSONL.")
     parser.add_argument("--records", required=True, help="Records JSONL.")
+    parser.add_argument("--filter_strength", default="legacy", help="legacy|permissive|default|strict.")
     parser.add_argument("--out", required=True, help="Output scored prompts JSONL.")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    scored = compute_cue_scores(read_jsonl(args.prompts), read_jsonl(args.records))
+    scored = compute_cue_scores(read_jsonl(args.prompts), read_jsonl(args.records), filter_strength=args.filter_strength)
     write_jsonl(args.out, scored)
     passed = sum(1 for row in scored if row["passes_cue_filter"])
     LOGGER.info("Cue-scored %s prompts (%s passed filter).", len(scored), passed)

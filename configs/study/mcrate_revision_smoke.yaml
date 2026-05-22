@@ -1,0 +1,84 @@
+study_name: mcrate_revision_smoke
+output_root: study_runs/mcrate_revision_smoke
+
+background_path: data/raw/background_debug.txt
+
+records:
+  config: configs/data/records_debug_revision.yaml
+  output_name: mcrate_revision_smoke_records.jsonl
+
+conditions:
+  C0_clean:
+    corpus_config: configs/data/corpus_debug.yaml
+    seeds: [1]
+  C2_exact_10x:
+    corpus_config: configs/data/corpus_debug_C2.yaml
+    seeds: [1]
+
+training:
+  config: configs/train/debug.yaml
+  overrides: {}
+
+audit:
+  split: test
+  target_counts:
+    member: 12
+    nonmember: 12
+    canary: 0
+  sample_seed: 1
+  generation_configs:
+    - configs/generation/budget1.yaml
+  analysis_generation_config: configs/generation/budget1.yaml
+  include_failed_prompts: false
+  matching_variant: full
+  cue_filter_strength: default
+  cue_variant: full
+  scoring_mode: S1
+
+revision:
+  enabled: true
+  ablation_names: [none, sensitive_value_shuffle]
+  matching_variants: [full, family_only, strict]
+  retain_raw_generations: true
+  adaptive_attack:
+    enabled: true
+    generation_budgets: [20]
+    top_k: 2
+    rounds: 1
+    objectives: [lift]
+    attack_types: [B3_adaptive]
+    seed: 1
+
+mechanistic:
+  enabled: false
+  focus_conditions: []
+  focus_seeds: []
+
+provenance:
+  enabled: false
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  max_total_targets: 0
+  max_targets_per_record: 0
+  overrides: {}
+
+removal:
+  enabled: false
+  focus_conditions: []
+  focus_seeds: []
+  selection_unit_by_condition: {}
+  run_mech_lite: false
+
+storage:
+  skip_existing: true
+  remove_generation_after_scoring: false
+  delete_intermediate_checkpoints: true
+  remove_activation_cache_after_mech: true
+  remove_removal_models_after_validation: true
+  shared_rendered_docs: false
+  shared_prompts: false
+
+cluster:
+  python_bin: python
+  scheduler: generic

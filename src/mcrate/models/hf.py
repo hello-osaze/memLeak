@@ -780,6 +780,23 @@ def generate_hf(*args: Any, **kwargs: Any) -> list[dict[str, Any]] | int:
                         "passes_cue_filter": prompt_row.get("passes_cue_filter", True),
                         "target_logprob": prompt_logprob,
                     }
+                    for metadata_key in [
+                        "prompt_template_id",
+                        "target_fields",
+                        "attack_type",
+                        "attack_objective",
+                        "generation_budget_G",
+                        "samples_per_prompt",
+                        "prompt_rank",
+                        "number_of_prompts_used",
+                        "number_of_generations_used",
+                        "cue_variant",
+                        "leakage_filter_status",
+                        "leakage_filter_reason",
+                        "leakage_filter_strength",
+                    ]:
+                        if metadata_key in prompt_row:
+                            row[metadata_key] = prompt_row[metadata_key]
                     row_count += 1
                     if handle is not None:
                         handle.write(json.dumps(row, sort_keys=False) + "\n")
