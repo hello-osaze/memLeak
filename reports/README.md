@@ -5,6 +5,14 @@ M-CRATE paper. Full training runs, raw generations, checkpoints, and background
 corpora live under `study_runs/` or `data/raw/backgrounds/` and are not tracked
 in Git.
 
+## Paper
+
+The final submitted manuscript is:
+
+```text
+reports/paper/Mosaic_or_Memory_finalpaper.pdf
+```
+
 ## Figures
 
 Publication-ready PDFs and editable SVGs are in:
