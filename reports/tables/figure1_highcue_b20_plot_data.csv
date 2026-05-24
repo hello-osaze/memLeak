@@ -1,0 +1,6 @@
+condition,condition_slug,member_rate_B20,member_ci_low,member_ci_high,nonmember_rate_B20,nonmember_ci_low,nonmember_ci_high,lift_B20,lift_ci_low,lift_ci_high,interval_type
+C0-clean,c0_clean,0.3786,0.373,0.382,0.379,0.3703,0.3873,-0.0004,-0.0053,0.0027,seed_minmax
+C1-exact-1x,c1_exact_1x,0.4376,0.4313,0.4477,0.3869,0.3697,0.3983,0.0507,0.0387,0.064,seed_minmax
+C2-exact-10x,c2_exact_10x,0.4248,0.4137,0.4323,0.3772,0.373,0.3797,0.0476,0.0407,0.0527,seed_minmax
+C3-fuzzy-5x,c3_fuzzy_5x,0.4451,0.444,0.4463,0.4206,0.4157,0.4273,0.0245,0.019,0.0283,seed_minmax
+C4-redacted,c4_redacted,0.0544,0.0453,0.069,0.0553,0.043,0.0727,-0.0009,-0.0037,0.0023,seed_minmax

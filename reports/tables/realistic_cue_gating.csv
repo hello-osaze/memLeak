@@ -1,0 +1,16 @@
+condition,label,budget,high_lift,medium_lift,low_lift,no_cue_lift
+c0_clean,C0-clean,1,-0.0025,0.0,0.0,0.0
+c0_clean,C0-clean,5,-0.0023,-0.0002,0.0,0.0
+c0_clean,C0-clean,20,-0.0004,0.0006,0.0004,0.0001
+c1_exact_1x,C1-exact-1x,1,0.0431,0.0,-0.0002,-0.0002
+c1_exact_1x,C1-exact-1x,5,0.0562,0.0017,-0.0004,0.0
+c1_exact_1x,C1-exact-1x,20,0.0507,0.0052,0.0006,0.0004
+c2_exact_10x,C2-exact-10x,1,0.0445,-0.0005,-0.0001,-0.0002
+c2_exact_10x,C2-exact-10x,5,0.0351,0.0003,-0.0001,0.0001
+c2_exact_10x,C2-exact-10x,20,0.0476,0.0042,-0.0001,0.0006
+c3_fuzzy_5x,C3-fuzzy-5x,1,0.081,0.001,0.0,-0.0001
+c3_fuzzy_5x,C3-fuzzy-5x,5,0.0654,0.0041,0.0001,0.0001
+c3_fuzzy_5x,C3-fuzzy-5x,20,0.0245,0.011,0.0008,0.0005
+c4_redacted,C4-redacted,1,0.0004,0.0011,0.001,0.0007
+c4_redacted,C4-redacted,5,-0.0025,0.001,0.0004,0.0001
+c4_redacted,C4-redacted,20,-0.0009,0.0016,0.0009,0.0009

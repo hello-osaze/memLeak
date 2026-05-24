@@ -1,0 +1,20 @@
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{ll}
+\toprule
+Control dimension & Matched or held fixed how? \\
+\midrule
+Record family & Distribution-matched across identity, account, and event records \\
+Prompt template & Identical prompt-template catalog for members and nonmembers \\
+Cue band & Identical computed cue-band filter and cue-band labels \\
+Decoding budget & Identical $B \in \{1,5,20\}$ generation budgets \\
+Scoring rule & Identical sensitive-field extractor and record-exact matcher \\
+Sensitive-field category & Same family-specific sensitive-field schema \\
+Anchor-field count & Same generator schema and balanced audit sample \\
+Target string length & Checked by member/nonmember balance diagnostics \\
+\bottomrule
+\end{tabular}
+\caption{Distribution-matched nonmember controls used by \mcrate{}.}
+\label{tab:matched-control-dimensions}
+\end{table}

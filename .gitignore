@@ -15,5 +15,20 @@ tmp/
 study_runs/
 backups/
 data/raw/backgrounds/
+data/corpora/
+data/processed/
+data/prompts/
+data/records/
 
 *.egg-info/
+
+# Generated manuscript scratch files. Keep final lightweight assets under
+# reports/figures/figs_publi, reports/tables, and reports/cloud_6of6.
+reports/figures/*.pdf
+reports/figures/*.svg
+reports/gpt2_medium_seed1/
+reports/*_artifacts.tgz
+reports/paper_*.md
+reports/*_blueprint.md
+raw_generations*.jsonl
+raw_generations*.jsonl.gz

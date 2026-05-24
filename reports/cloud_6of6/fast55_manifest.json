@@ -1,0 +1,11 @@
+{
+  "best_of_template_rows": 12,
+  "matched_control_balance_rows": 59,
+  "notes": [
+    "Provenance baseline rows are generated only when candidate_pools.jsonl and gradient_similarity.jsonl are present.",
+    "Best-of-template uses existing high-cue prompts and does not run new generations."
+  ],
+  "out_dir": "reports/cloud_6of6",
+  "provenance_rows": 0,
+  "run_root": "study_runs/workshop_realistic_main_c4_100m"
+}

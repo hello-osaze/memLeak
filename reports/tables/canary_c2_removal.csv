@@ -1,0 +1,10 @@
+view,seed_or_group,variant,tasks,exact_count,exact_rate,mean_logprob
+aggregate,1,high_attribution_removal,900,,0.0133,-2.0053
+aggregate,1,random_removal,900,,0.0111,-2.0068
+aggregate,2,high_attribution_removal,900,,0.0056,-2.0542
+aggregate,2,random_removal,900,,0.0144,-1.9910
+aggregate,3,high_attribution_removal,900,,0.0100,-2.0458
+aggregate,3,random_removal,900,,0.0078,-1.9827
+targeted,pooled,original,80,6,0.0750,
+targeted,pooled,high_attribution_removal,80,0,0.0000,
+targeted,pooled,random_removal,80,1,0.0125,

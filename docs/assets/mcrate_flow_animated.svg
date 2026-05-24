@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">Animated M-CRATE workflow</title>
+  <desc id="desc">Synthetic records are exposed under controlled conditions, audited with matched member and nonmember prompts, and interpreted through member-over-nonmember lift.</desc>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #617185;
+      --paper: #fbfcfd;
+      --line: #bed0de;
+      --member: #2f7f73;
+      --nonmember: #8e5b9a;
+      --accent: #d68637;
+      --blue: #4878b8;
+    }
+    .bg { fill: var(--paper); }
+    .card { fill: #ffffff; stroke: #d9e2ea; stroke-width: 1.5; rx: 12; }
+    .label { font: 700 18px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--ink); }
+    .small { font: 500 13px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--muted); }
+    .tiny { font: 600 11px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ffffff; }
+    .formula { font: 700 19px ui-monospace, "SFMono-Regular", Consolas, monospace; fill: var(--ink); }
+    .wire { fill: none; stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
+    .pulse { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 18 290; animation: flow 3.2s linear infinite; }
+    .pulse.two { animation-delay: .55s; stroke: var(--blue); }
+    .dot { animation: breathe 2.8s ease-in-out infinite; transform-origin: center; }
+    .barM { fill: var(--member); animation: memberBar 3.6s ease-in-out infinite; transform-origin: 688px 222px; }
+    .barN { fill: var(--nonmember); animation: nonBar 3.6s ease-in-out infinite; transform-origin: 732px 222px; }
+    .lift { fill: var(--accent); animation: liftBar 3.6s ease-in-out infinite; transform-origin: 814px 222px; }
+    .halo { fill: none; stroke: var(--accent); stroke-width: 2; opacity: .35; animation: halo 2.8s ease-out infinite; transform-origin: center; }
+    @keyframes flow {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -308; }
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(1); opacity: .85; }
+      50% { transform: scale(1.12); opacity: 1; }
+    }
+    @keyframes halo {
+      0% { transform: scale(.7); opacity: .45; }
+      70%, 100% { transform: scale(1.35); opacity: 0; }
+    }
+    @keyframes memberBar {
+      0%, 100% { transform: scaleY(.72); }
+      50% { transform: scaleY(.92); }
+    }
+    @keyframes nonBar {
+      0%, 100% { transform: scaleY(.70); }
+      50% { transform: scaleY(.79); }
+    }
+    @keyframes liftBar {
+      0%, 100% { transform: scaleY(.32); }
+      50% { transform: scaleY(.55); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .pulse, .dot, .barM, .barN, .lift, .halo { animation: none; }
+    }
+  </style>
+
+  <rect class="bg" width="960" height="300"/>
+
+  <path class="wire" d="M245 150 C285 150 300 150 337 150"/>
+  <path class="wire" d="M554 150 C592 150 609 150 646 150"/>
+  <path class="pulse" d="M245 150 C285 150 300 150 337 150"/>
+  <path class="pulse two" d="M554 150 C592 150 609 150 646 150"/>
+
+  <rect class="card" x="44" y="54" width="205" height="192"/>
+  <text class="label" x="74" y="91">Controlled Records</text>
+  <text class="small" x="74" y="119">synthetic members</text>
+  <text class="small" x="74" y="139">matched nonmembers</text>
+  <text class="small" x="74" y="159">C0-C4 exposure</text>
+  <g transform="translate(76 184)">
+    <rect x="0" y="0" width="118" height="12" rx="6" fill="#dcebe8"/>
+    <rect x="0" y="24" width="88" height="12" rx="6" fill="#eadfec"/>
+    <circle class="halo" cx="142" cy="18" r="15"/>
+    <circle class="dot" cx="142" cy="18" r="9" fill="#d68637"/>
+  </g>
+
+  <rect class="card" x="338" y="54" width="218" height="192"/>
+  <text class="label" x="368" y="91">Cue-Controlled Audit</text>
+  <text class="small" x="368" y="119">same cue band</text>
+  <text class="small" x="368" y="139">same budget</text>
+  <text class="small" x="368" y="159">same scoring rule</text>
+  <g transform="translate(370 187)">
+    <rect x="0" y="0" width="64" height="26" rx="13" fill="#2f7f73"/>
+    <text class="tiny" x="19" y="17">mem</text>
+    <rect x="78" y="0" width="84" height="26" rx="13" fill="#8e5b9a"/>
+    <text class="tiny" x="93" y="17">nonmem</text>
+  </g>
+
+  <rect class="card" x="647" y="54" width="269" height="192"/>
+  <text class="label" x="677" y="91">Interpret Lift</text>
+  <text class="formula" x="677" y="123">delta_mem = r_mem - r_non</text>
+  <line x1="678" y1="222" x2="858" y2="222" stroke="#d9e2ea" stroke-width="2"/>
+  <rect class="barM" x="686" y="154" width="24" height="68" rx="4"/>
+  <rect class="barN" x="730" y="164" width="24" height="58" rx="4"/>
+  <rect class="lift" x="812" y="188" width="24" height="34" rx="4"/>
+  <text class="small" x="674" y="240">raw rates</text>
+  <text class="small" x="797" y="240">lift</text>
+  <path d="M772 186 L798 186" stroke="#d68637" stroke-width="3" stroke-linecap="round"/>
+  <path d="M798 186 L790 179 M798 186 L790 193" stroke="#d68637" stroke-width="3" stroke-linecap="round"/>
+</svg>

@@ -1,161 +1,86 @@
 # M-CRATE
 
-Mechanistic Cue-Resistant Auditing of Training Data Extraction in Language Models.
+**Mosaic or Memory? Cue-controlled auditing of training-data extraction.**
 
-This repository implements the early-paper benchmark and audit pipeline described in
-`mcrate_early_paper_implementation_plan.md`. The code is organized around the same
-module boundaries as the plan:
+M-CRATE is a research pipeline for asking a careful question about language
+model privacy: when a model prints a sensitive-looking value, did training
+exposure make that value more likely, or did the prompt already provide enough
+context for the model to reconstruct something plausible?
 
-- synthetic record generation and rendering
-- corpus construction and dataset validation
-- cue-controlled prompt generation and scoring
-- model training and behavioral extraction auditing
-- mechanistic analysis and provenance validation
+The project builds synthetic private-record-style data, fine-tunes open
+language models under controlled exposure conditions, audits members and matched
+nonmembers with the same prompts and decoding budgets, and reports
+member-over-nonmember lift:
 
-The repository supports two backends:
-
-- `toy_memorizer`: a lightweight debug backend that runs in a minimal Python
-  environment and exercises the full pipeline end-to-end.
-- `huggingface_causal_lm`: the main training/generation path for real model runs
-  when `torch` and `transformers` are installed.
-
-For real-model smoke tests on this machine, the validated path uses a Python 3.12
-virtual environment because the default Python 3.13 environment did not have a
-compatible `torch` wheel available.
-
-## Quick Start
-
-```bash
-PYTHONPATH=src python -m mcrate.data.generate_records \
-  --config configs/data/records_debug.yaml \
-  --out data/records/debug_all_records.jsonl
-
-PYTHONPATH=src python -m mcrate.data.render_templates \
-  --records data/records/debug_all_records.jsonl \
-  --condition C3_fuzzy_5x \
-  --out data/processed/debug_rendered_docs.jsonl
-
-PYTHONPATH=src python -m mcrate.data.build_corpus \
-  --background data/raw/background_debug.txt \
-  --rendered_docs data/processed/debug_rendered_docs.jsonl \
-  --config configs/data/corpus_debug.yaml \
-  --out data/corpora/debug_C3
+```text
+delta_mem = r_mem - r_non
 ```
 
-For a complete debug pass, run:
+Raw extraction rates are still reported, but the paper interprets leakage
+through matched lift. This keeps high-cue prompt reconstruction separate from
+training-origin extraction.
+
+<p align="center">
+  <img src="docs/assets/mcrate_flow_animated.svg" width="760" alt="Animated M-CRATE audit workflow">
+</p>
+
+## What Is In This Repo
+
+- `src/mcrate/`: reusable package code for data generation, rendering, corpus
+  construction, prompting, generation, scoring, aggregation, provenance, and the
+  study runner.
+- `configs/`: reproducible YAML configs. The paper-facing configs are listed
+  below; older smoke/debug configs remain for development but are not the main
+  artifact.
+- `scripts/`: helpers for public-background construction, paper-asset
+  generation, and cloud artifact bundles.
+- `reports/`: lightweight paper tables, cue examples, and publication figures.
+  Large run outputs and model weights are intentionally not versioned.
+- `tests/`: unit tests for scoring, aggregation, matching, leakage filtering,
+  corpus construction, revision hooks, and study-run locking.
+
+No real personal data is used. All private-looking records are synthetic and use
+the fake domain `synthx.invalid`.
+
+## Install
 
 ```bash
-scripts/run_all_debug.sh
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -e .
+python -m pip install -r requirements.txt
 ```
 
-For a real Hugging Face smoke run with a tiny model:
+For real model training and generation, install the optional stack too:
 
 ```bash
-/opt/homebrew/bin/python3.12 -m venv .venv312
-./.venv312/bin/python -m pip install torch transformers safetensors
-PYTHON_BIN=./.venv312/bin/python ./scripts/run_hf_smoke.sh
+python -m pip install "torch>=2.2" "transformers>=4.40" "datasets>=2.18" safetensors
 ```
 
-For a tiny GPT-NeoX smoke run closer to the intended Pythia family:
+## Quick Smoke Test
+
+The smoke config uses the toy backend and a tiny background file so researchers
+can check the pipeline without downloading a model:
 
 ```bash
-PYTHON_BIN=./.venv312/bin/python \
-TRAIN_CONFIG=configs/train/smoke_tiny_gptneox.yaml \
-OUT_DIR=checkpoints/hf_smoke_gptneox_seed1 \
-GEN_OUT=outputs/generations/hf_smoke_gptneox_seed1.jsonl \
-SCORE_OUT=outputs/scores/hf_smoke_gptneox_seed1_scores.jsonl \
-MECH_OUT=outputs/mech/hf_smoke_gptneox \
-./scripts/run_hf_smoke.sh
+PYTHONPATH=src python run_full_study.py \
+  --config configs/study/mcrate_revision_smoke.yaml \
+  run-all
 ```
 
-## Full Study Runner
-
-The repository now includes a central study launcher for cluster-scale runs:
+For normal development checks:
 
 ```bash
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-all
+PYTHONPATH=src python -m unittest discover -s tests
 ```
 
-The recommended configs are:
+## Reproduce The Paper Runs
 
-- `configs/study/workshop_realistic_main_c4.yaml`
-- `configs/study/workshop_realistic_main_c4_100m.yaml`
-- `configs/study/workshop_realistic_main_dolma.yaml`
-- `configs/study/workshop_realistic_main_dolma_100m.yaml`
-- `configs/study/workshop_canary_support_c4.yaml`
-- `configs/study/workshop_canary_support_c4_100m.yaml`
-- `configs/study/workshop_realistic_main.yaml`
-- `configs/study/workshop_canary_support.yaml`
-- `configs/study/full_paper_minimal_cluster.yaml`
-- `configs/study/full_paper_strong_cluster.yaml`
-- `configs/study/paper_publication_cluster.yaml`
+The main paper uses the realistic C4-en 100M setup with Pythia-410M-deduped,
+five exposure conditions, three seeds, and budgets `B in {1, 5, 20}`.
 
-The workshop-oriented configs split the paper into two tracks:
-
-- realistic main track: `C0-C4`, no canaries, `3` seeds, `budget1/5/20`,
-  behavioral focus only
-- canary support track: canary-only `C0-C4`, `3` seeds, `budget1/5/20`,
-  mechanistic/provenance/removal only where the signal is strong enough
-
-The named background variants encode the intended paper structure:
-
-- `workshop_realistic_main_c4`: main realistic result on `C4-en`
-- `workshop_realistic_main_c4_100m`: same main realistic result at `100M`
-- `workshop_canary_support_c4`: supporting canary result on `C4-en`
-- `workshop_canary_support_c4_100m`: same supporting canary result at `100M`
-- `workshop_realistic_main_dolma`: robustness appendix rerun on `Dolma`
-- `workshop_realistic_main_dolma_100m`: same robustness rerun at `100M`
-
-The legacy/full-study configs map directly onto the earlier `.md` run plans:
-
-- minimal: `C0-C4`, seed `1` for all conditions, extra seeds for `C2/C3`,
-  `budget5` behavioral audit, focused `C2/C3` mechanistic/provenance/removal
-- strong: `3` seeds for all conditions, `budget1` and `budget5`, all `C2/C3`
-  mechanistic/provenance/removal runs
-- publication: `3` seeds for `C0-C4`, plus an event-focused `C3_fuzzy_10x`
-  escalation condition, colder longer decode budgets, larger provenance pools,
-  and robust no-data handling for downstream mechanistic/provenance/removal stages
-
-For paper-facing runs, use a real public background bundle directory with:
-
-- `background_docs_train.jsonl`
-- `background_docs_val.jsonl`
-- `background_train.txt`
-- `background_val.txt`
-- `background_manifest.json`
-
-The workshop configs are designed for document-level background sampling with
-real held-out validation splits, not repeated token loops.
-
-To build a local bundle from raw public documents:
-
-```bash
-python scripts/build_background_bundle.py \
-  --sources /path/to/public_docs_dir_or_jsonl \
-  --out data/raw/background_public_generic_docs.jsonl
-```
-
-To stream a paper-style bundle directly from Hugging Face datasets:
-
-```bash
-python scripts/build_hf_background_corpus.py \
-  --preset c4-en \
-  --train-tokens 50000000 \
-  --val-tokens 5000000 \
-  --out-dir data/raw/backgrounds/c4_en
-```
-
-For the robustness appendix on Dolma:
-
-```bash
-python scripts/build_hf_background_corpus.py \
-  --preset dolma \
-  --train-tokens 50000000 \
-  --val-tokens 5000000 \
-  --out-dir data/raw/backgrounds/dolma
-```
-
-For the stronger `100M` paper run:
+First build or provide the C4-en background bundle:
 
 ```bash
 python scripts/build_hf_background_corpus.py \
@@ -165,146 +90,128 @@ python scripts/build_hf_background_corpus.py \
   --out-dir data/raw/backgrounds/c4_en_100m
 ```
 
-```bash
-python scripts/build_hf_background_corpus.py \
-  --preset dolma \
-  --train-tokens 100000000 \
-  --val-tokens 10000000 \
-  --out-dir data/raw/backgrounds/dolma_100m
-```
-
-The bundled synthetic `data/raw/background_full.txt` is still available for
-legacy/debug flows, but it is not the recommended background source for the
-new workshop-oriented study configs.
-
-For the realistic `C0-C4` study configs, canary records are excluded and the
-records config itself uses `n_canaries: 0`, so the realistic track stays
-strictly realistic-only.
-
-```bash
-python run_full_study.py \
-  --config configs/study/full_paper_minimal_cluster.yaml \
-  run-all
-```
-
-Useful commands:
-
-```bash
-# Inspect the full dependency graph and current unit status
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml list-units
-
-# Run one unit locally
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-unit records.generate
-
-# Run every currently ready unit sequentially
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-ready
-
-# Run the full early-paper study end-to-end in one invocation
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml run-all
-
-# Export cluster-ready commands for all ready units
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml emit-commands --status ready
-
-# Export a Slurm array wrapper for all ready units
-python run_full_study.py --config configs/study/full_paper_minimal_cluster.yaml emit-slurm-array --status ready
-```
-
-For the reviewer-aligned workshop package, the main realistic run is:
-
-```bash
-python run_full_study.py \
-  --config configs/study/workshop_realistic_main_c4.yaml \
-  run-all
-```
-
-The supporting canary run is:
-
-```bash
-python run_full_study.py \
-  --config configs/study/workshop_canary_support_c4.yaml \
-  run-all
-```
-
-The robustness appendix rerun is:
-
-```bash
-python run_full_study.py \
-  --config configs/study/workshop_realistic_main_dolma.yaml \
-  run-all
-```
-
-If you want the stronger `100M` version of the same package:
+Then run the behavioral audit:
 
 ```bash
 python run_full_study.py \
   --config configs/study/workshop_realistic_main_c4_100m.yaml \
+  --device cuda \
   run-all
 ```
+
+Run the provenance and removal follow-up on the same output root:
 
 ```bash
 python run_full_study.py \
-  --config configs/study/workshop_canary_support_c4_100m.yaml \
+  --config configs/study/workshop_realistic_main_c4_100m_realistic_6of6.yaml \
+  --device cuda \
   run-all
 ```
+
+Optional GPT-2 Medium seed-1 robustness run:
 
 ```bash
 python run_full_study.py \
-  --config configs/study/workshop_realistic_main_dolma_100m.yaml \
+  --config configs/study/workshop_realistic_main_c4_100m_gpt2_medium_seed1.yaml \
+  --device cuda \
   run-all
 ```
 
-For the broader publication-oriented cluster run, the main entry point remains:
+Useful runner commands:
 
 ```bash
-python run_full_study.py --config configs/study/paper_publication_cluster.yaml run-all
+# Inspect dependency graph and current status
+python run_full_study.py --config configs/study/workshop_realistic_main_c4_100m.yaml plan
+
+# Run one unit
+python run_full_study.py --config configs/study/workshop_realistic_main_c4_100m.yaml \
+  run-unit audit_run.c2_exact_10x.seed_1.budget20
+
+# Emit cluster commands for ready units
+python run_full_study.py --config configs/study/workshop_realistic_main_c4_100m.yaml \
+  emit-commands --status ready
 ```
 
-The runner is designed to be storage-conscious by default:
+## Paper Conditions
 
-- records and audit prompts are shared across the full study
-- rendered docs are shared per condition and reused across seeds
-- activation caching stays focused on `resid_post` with `float16`
-- raw generation JSONL is deleted after scoring
-- intermediate `step_*` training checkpoints are pruned after a successful final save
-- mechanistic activation caches are pruned after probe-derived candidate layers are written
-- removal-validation model weights are dropped after the removal audit completes
-- completed units are tracked with per-unit markers so interrupted cluster runs
-  can resume cleanly
+| Condition | Training insertion | Purpose |
+| --- | --- | --- |
+| `C0_clean` | No target records inserted | Prompt reconstruction and false-positive baseline |
+| `C1_exact_1x` | Each member inserted once | Single-exposure memorization |
+| `C2_exact_10x` | Each member inserted ten times | Exact duplicate amplification |
+| `C3_fuzzy_5x` | Five fuzzy variants per member | Near-duplicate exposure |
+| `C4_redacted` | Fuzzy structure with sensitive values masked | Structural control |
 
-Outputs are isolated under the configured `output_root`, including:
+Each condition is audited with the same member targets, matched nonmember
+targets, cue bands, budgets, decoding settings, and scoring rules.
 
-- `study_plan.json`
-- `cluster/*commands*`
-- `data/`, `checkpoints/`, `outputs/`, and `reports/` for that specific study
-- `reports/study_summary.md`
+## Generate Paper Assets
 
-Large runtime artifacts such as trained weights, activation caches, and long
-generation dumps are intentionally not meant to be versioned in git. The repo
-tracks the code, configs, lightweight benchmark assets, and written findings;
-cluster outputs should live in external storage or fresh local runs.
-
-## Tests
-
-A lightweight regression suite now covers the main publication-facing fixes:
+After the main study outputs exist under `study_runs/workshop_realistic_main_c4_100m`,
+generate lightweight tables and figures with:
 
 ```bash
-PYTHONPATH=src python -m unittest discover -s tests
+python scripts/generate_realistic_assets.py
+python scripts/generate_canary_story_assets.py
+python scripts/generate_insight_figures.py
+python scripts/generate_mcrate_in_action_figure.py
+python scripts/generate_fast55_paper_evidence.py
 ```
 
-The tests cover:
+Paper-ready figures live in:
 
-- corrected generation scoring precision/F1
-- non-degenerate uncertainty intervals in aggregate reports
-- low/no-cue prompt leakage reporting
-- leak-free probe train/eval splits
-- render overrides for focused publication conditions
-- cluster-aware provenance summaries
+```text
+reports/figures/figs_publi/
+```
 
-## Notes
+Paper-ready tables and plot inputs live in:
 
-- The code never uses real personal data. All records are synthetic and visibly
-  marked as such.
-- The debug backend is designed for pipeline validation, not as a substitute for
-  real language-model experiments.
-- The Hugging Face backend is implemented behind dependency checks so the project
-  remains importable in lean environments.
+```text
+reports/tables/
+reports/cloud_6of6/
+```
+
+See `reports/README.md` for a compact artifact map.
+
+## Key Outputs
+
+The study runner writes each run into its configured `output_root`, usually
+inside `study_runs/`:
+
+- `study_plan.json`: planned units and dependency graph
+- `state/units/*.json`: completed, failed, blocked, or pending unit markers
+- `data/`: generated records, rendered documents, prompts, and corpora
+- `checkpoints/`: trained model outputs
+- `outputs/`: generations, scores, provenance rows, and optional raw artifacts
+- `reports/`: aggregate behavioral and provenance summaries
+
+Large runtime artifacts are ignored by Git. Keep them in local or external
+storage; the repository tracks code, configs, tests, and lightweight paper
+artifacts.
+
+## Researcher Notes
+
+- The most important metric is `delta_mem`, not raw extraction alone.
+- High-cue prompts are diagnostic: they test context-conditioned extraction,
+  not spontaneous leakage.
+- Low/no-cue extraction is reported separately because it corresponds to a
+  stronger privacy threat model.
+- Matched nonmembers are essential. They estimate how much a prompt can induce
+  reconstruction even without target-record exposure.
+- Provenance is a follow-up diagnostic: once an extraction occurs, it asks
+  whether the source record or fuzzy source cluster can be traced.
+
+## Repository Hygiene
+
+Generated corpora, prompts, records, checkpoints, raw backgrounds, and full run
+directories are ignored. To reset local runtime clutter after archiving the runs
+you need:
+
+```bash
+rm -rf tmp .pytest_cache checkpoints outputs
+find . -type d -name __pycache__ -prune -exec rm -rf {} +
+find . -name .DS_Store -delete
+```
+
+Do not delete `study_runs/workshop_realistic_main_c4_100m` unless the completed
+paper run has been archived elsewhere.

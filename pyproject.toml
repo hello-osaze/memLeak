@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "mcrate"
 version = "0.1.0"
-description = "Mechanistic cue-resistant auditing of training data extraction"
+description = "Cue-controlled auditing of training-data extraction in language models"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
