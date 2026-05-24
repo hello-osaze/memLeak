@@ -17,7 +17,7 @@
     .label { font: 700 18px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--ink); }
     .small { font: 500 13px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: var(--muted); }
     .tiny { font: 600 11px ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #ffffff; }
-    .formula { font: 700 19px ui-monospace, "SFMono-Regular", Consolas, monospace; fill: var(--ink); }
+    .formula { font: 700 17px ui-monospace, "SFMono-Regular", Consolas, monospace; fill: var(--ink); }
     .wire { fill: none; stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
     .pulse { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 18 290; animation: flow 3.2s linear infinite; }
     .pulse.two { animation-delay: .55s; stroke: var(--blue); }
@@ -88,7 +88,10 @@
 
   <rect class="card" x="647" y="54" width="269" height="192"/>
   <text class="label" x="677" y="91">Interpret Lift</text>
-  <text class="formula" x="677" y="123">delta_mem = r_mem - r_non</text>
+  <text class="formula" x="677" y="119">
+    <tspan x="677" dy="0">delta_mem</tspan>
+    <tspan x="677" dy="22">= r_mem - r_non</tspan>
+  </text>
   <line x1="678" y1="222" x2="858" y2="222" stroke="#d9e2ea" stroke-width="2"/>
   <rect class="barM" x="686" y="154" width="24" height="68" rx="4"/>
   <rect class="barN" x="730" y="164" width="24" height="58" rx="4"/>
